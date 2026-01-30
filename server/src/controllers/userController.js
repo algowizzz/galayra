@@ -2,7 +2,6 @@ const db = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// REGISTER
 exports.registerUser = (req, res) => {
   const { name, email, password } = req.body;
 
@@ -23,7 +22,6 @@ exports.registerUser = (req, res) => {
   });
 };
 
-// LOGIN
 exports.loginUser = (req, res) => {
   const { email, password } = req.body;
 
@@ -51,7 +49,6 @@ exports.loginUser = (req, res) => {
   });
 };
 
-// PROTECTED ROUTE
 exports.getMe = (req, res) => {
   const userId = req.user.id;
 
