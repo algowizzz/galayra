@@ -1,98 +1,86 @@
 const db = require("../config/db");
 
-exports.createProduct = (req, res) => {
-  const { title, description, price } = req.body;
-  const userId = req.user.id;
-
-  if (!title || !price) {
-    return res.status(400).json({ message: "Title and price are required" });
-  }
-
-  const sql =
-    "INSERT INTO products (user_id, title, description, price) VALUES (?, ?, ?, ?)";
-
-  db.query(sql, [userId, title, description, price], (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
-
-    res.status(201).json({ message: "Product created successfully" });
-  });
-};
-
-exports.getMyProducts = (req, res) => {
-  const userId = req.user.id;
-
-  const sql = "SELECT * FROM products WHERE user_id = ?";
-
-  db.query(sql, [userId], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Error fetching products" });
-    }
-    res.json(result);
-  });
-};
-
 exports.getProducts = (req, res) => {
-  const sql = "SELECT * FROM products";
+  const sql = `
+    SELECT 
+      p.id AS product_id,
+      p.title,
+      p.description,
+      p.image_url,
+      v.id AS variant_id,
+      v.title AS variant_title,
+      v.price
+    FROM products p
+    JOIN product_variants v ON p.id = v.product_id
+    WHERE p.is_active = true
+  `;
 
-  db.query(sql, (err, result) => {
+  db.query(sql, (err, rows) => {
     if (err) {
       return res.status(500).json({ message: "Error fetching products" });
     }
-    res.json(result);
+
+    const products = {};
+    rows.forEach(row => {
+      if (!products[row.product_id]) {
+        products[row.product_id] = {
+          id: row.product_id,
+          title: row.title,
+          description: row.description,
+          image_url: row.image_url,
+          variants: []
+        };
+      }
+
+      products[row.product_id].variants.push({
+        id: row.variant_id,
+        title: row.variant_title,
+        price: row.price
+      });
+    });
+
+    res.json(Object.values(products));
   });
 };
 
 exports.getProductById = (req, res) => {
   const { id } = req.params;
 
-  const sql = "SELECT * FROM products WHERE id = ?";
-
-  db.query(sql, [id], (err, result) => {
-    if (err || result.length === 0) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.json(result[0]);
-  });
-};
-
-exports.deleteProduct = (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-
-  const sql = "DELETE FROM products WHERE id = ? AND user_id = ?";
-
-  db.query(sql, [id, userId], (err, result) => {
-    if (err || result.affectedRows === 0) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.json({ message: "Product deleted" });
-  });
-};
-
-exports.updateProduct = (req, res) => {
-  const { id } = req.params;
-  const { title, description, price } = req.body;
-  const userId = req.user.id;
-
   const sql = `
-    UPDATE products 
-    SET title = ?, description = ?, price = ?
-    WHERE id = ? AND user_id = ?
+    SELECT 
+      p.id AS product_id,
+      p.title,
+      p.description,
+      p.image_url,
+      v.id AS variant_id,
+      v.title AS variant_title,
+      v.price
+    FROM products p
+    JOIN product_variants v ON p.id = v.product_id
+    WHERE p.id = ? AND p.is_active = true
   `;
 
-  db.query(sql, [title, description, price, id, userId], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Error updating product" });
+  db.query(sql, [id], (err, rows) => {
+    if (err || rows.length === 0) {
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Product not found or unauthorized" });
-    }
+    const product = {
+      id: rows[0].product_id,
+      title: rows[0].title,
+      description: rows[0].description,
+      image_url: rows[0].image_url,
+      variants: []
+    };
 
-    res.json({ message: "Product updated successfully" });
+    rows.forEach(row => {
+      product.variants.push({
+        id: row.variant_id,
+        title: row.variant_title,
+        price: row.price
+      });
+    });
+
+    res.json(product);
   });
 };
