@@ -1,0 +1,108 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: white;
+    color: black;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+.navbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 28px 60px;
+    border-bottom: 1px solid #eaeaea;
+    background: #fff;
+}
+
+.navbar-left .brand-name {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.navbar-left .brand-sub {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+}
+
+.navbar-center {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.navbar-center a,
+.navbar-center .nav-link-btn {
+    font-size: 16px;
+    color: #111;
+    font-weight: 500;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.navbar-center a:hover,
+.navbar-center .nav-link-btn:hover {
+    text-decoration: underline;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    margin-left: 6px;
+    font-size: 14px;
+    width: 120px;
+}
+
+.icon {
+    font-size: 16px;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.cart {
+    font-size: 18px;
+    cursor: pointer;
+}
