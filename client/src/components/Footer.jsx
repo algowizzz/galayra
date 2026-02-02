@@ -1,50 +1,65 @@
-import { forwardRef } from "react";
+import { forwardRef } from "react"
+import { Link } from "react-router-dom"
+import { FaFacebookF, FaInstagram, FaPinterestP } from "react-icons/fa"
+import "../styles/main.css"
 
-export default forwardRef(function Footer(props, ref) {
+export default forwardRef(function Footer(_, ref) {
   return (
-    <footer ref={ref} id="contact" className="site-footer">
-      <div className="footer-inner">
+    <footer ref={ref} className="footer">
+      <div className="footer-top">
+        <div className="footer-col">
+          <h4>Shop</h4>
+          <p>All</p>
+          <p><Link to="/products">Shop</Link></p>
+          <p><Link>About</Link></p>
+          <p><Link>Contact</Link></p>
+        </div>
 
-        <div className="footer-top">
-          <div className="footer-col">
-            <h4>Shipping & Returns</h4>
-            <p>Store Policy</p>
-            <p>Payment Methods</p>
-          </div>
+        <div className="footer-col">
+          <h4>Helpful Links</h4>
+          <p>FAQ</p>
+          <p>Terms & Conditions</p>
+          <p>Privacy Policy</p>
+          <p>Shipping Policy</p>
+          <p>Refund Policy</p>
+          <p>Cookie Policy</p>
+        </div>
 
-          <div className="footer-col">
-            <h4>Contact</h4>
-            <p>Tel: 123-456-7890</p>
-            <p className="link">info@galayra.com</p>
-          </div>
+        <div className="footer-col">
+          <h4>Contact</h4>
+          <p>galayra.business@gmail.com</p>
 
-          <div className="footer-col">
-            <h4>Follow</h4>
-            <p>Facebook</p>
-            <p>Instagram</p>
-            <p>Pinterest</p>
+          <div className="socials">
+            <FaInstagram />
+            <FaFacebookF />
+            <FaPinterestP />
           </div>
         </div>
 
-        <div className="footer-newsletter">
-          <p>Join our mailing list and never miss an update</p>
+        <div className="footer-col footer-subscribe">
+          <h4>Subscribe</h4>
+          <p className="subscribe-text">
+            Subscribe to our newsletter and be among the first to hear about
+            new arrivals, events and special offers.
+          </p>
 
-          <div className="newsletter-row">
-            <input type="email" placeholder="Email *" />
-            <button>Subscribe Now</button>
-          </div>
+          <label>Email *</label>
+          <input type="email" />
 
-          <div className="checkbox">
+          <div className="checkbox-row">
             <input type="checkbox" />
             <span>Yes, subscribe me to your newsletter.</span>
           </div>
+
+          <button className="subscribe-btn">Subscribe</button>
+
+          <p className="copyright">
+            © 2035 by GALAYRA
+          </p>
         </div>
-
       </div>
 
-      <div className="footer-bottom">
-        © 2035 by GALAYRA
-      </div>
+      <div className="footer-brand">GALAYRA</div>
     </footer>
   );
 });

@@ -1,44 +1,56 @@
-import { FaSearch, FaUser, FaShoppingBag } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaSearch, FaUser, FaShoppingBag } from "react-icons/fa"
+import { Link, useNavigate } from "react-router-dom"
+import "../styles/main.css"
+import { useCart } from "../context/CartContext"
 
-export default function Navbar({ onContact, onAbout }) {
-    return (
-        <nav className="navbar">
-            <div className="navbar-left">
-                <div
-                    className="brand-name"
-                    onClick={() => window.location.href = "/"}
-                    >
-                    GALAYRA
-                </div>
-                <div className="brand-sub">Your Cases</div>
-            </div>
+export default function Navbar() {
+  const { cartCount } = useCart()
+  const navigate = useNavigate()
+  const { setIsCartOpen, cartItems } = useCart()
 
-            <div className="navbar-center">
-                <Link to="/products" className="nav-link-btn">
-                    Shop
-                </Link>
-                <button className="nav-link-btn" onClick={onAbout}>
-                    About
-                </button>
-                <button className="nav-link-btn" onClick={onContact}>
-                Contact
-                </button>
-            </div>
+  const goToShop = () => {
+    navigate("/products");
+  }
 
-            <div className="navbar-right">
-                <div className="search-box">
-                <FaSearch className="icon" />
-                <input type="text" placeholder="Search" />
-                </div>
+  const goToAbout = () => {
+    navigate("/", { state: { scrollTo: "about" } })
+  }
 
-                <div className="account">
-                <FaUser className="icon" />
-                <span onClick={() => window.location.href = "/login"}>Log In</span>
-                </div>
+  const goToContact = () => {
+    navigate("/", { state: { scrollTo: "footer" } })
+  }
 
-                <FaShoppingBag className="cart" />
-            </div>
-        </nav>
-    );
+  return (
+    <>
+      <div className="top-strip">
+        Free shipping on orders over $75. <span>Subscribe</span>
+      </div>
+
+      <nav className="navbar">
+        <div className="nav-left">
+          <FaSearch className="nav-icon" />
+        </div>
+
+        <div className="nav-center">
+          <h1 className="logo">GALAYRA</h1>
+          <div className="nav-links">
+            <button onClick={goToShop} className="nav-btn">Shop</button>
+            <button onClick={goToAbout} className="nav-btn">About</button>
+            <button onClick={goToContact} className="nav-btn">Contact</button>
+          </div>
+        </div>
+
+        <div className="nav-right">
+          <div className="nav-account">
+            <FaUser />
+            <Link to="/login">Log In</Link>
+          </div>
+          <div className="nav-cart" onClick={() => setIsCartOpen(true)}>
+            <FaShoppingBag />
+            <span>Cart ({cartItems.length})</span>
+          </div>
+        </div>
+      </nav>
+    </>
+  )
 }
