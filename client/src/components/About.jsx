@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-export default forwardRef(function AboutSection(props, ref) {
+export default forwardRef(function About(props, ref) {
   return (
     <section ref={ref} id="about" className="about-wrapper">
       <div className="about-section">

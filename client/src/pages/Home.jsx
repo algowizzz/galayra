@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HomeProducts from "../components/HomeProducts";
 import About from "../components/About";
+import Categories from "../components/Categories";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const footerRef = useRef(null);

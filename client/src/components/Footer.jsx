@@ -15,7 +15,7 @@ export default forwardRef(function Footer(props, ref) {
           <div className="footer-col">
             <h4>Contact</h4>
             <p>Tel: 123-456-7890</p>
-            <p className="link">info@mysite.com</p>
+            <p className="link">info@galayra.com</p>
           </div>
 
           <div className="footer-col">

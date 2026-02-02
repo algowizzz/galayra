@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import one from "../assets/one.png";
 
 export default function Hero() {
@@ -13,12 +14,12 @@ export default function Hero() {
         </h1>
 
         <p>
-          I'm a paragraph. Click here to add your own text and edit me.
-          It’s easy. Just click “Edit Text” or double click me to add your
-          own content and make changes to the font.
+          Designed for everyday expression, Galayra brings together style, protection, and 
+          quality. Explore phone cases that feel personal, look elegant, and fit seamlessly 
+          into your lifestyle.
         </p>
 
-        <button className="hero-btn">Shop Now</button>
+        <Link to="/products" className="hero-btn">Shop Now</Link>
       </div>
 
       <div className="hero-right">
