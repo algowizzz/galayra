@@ -1,64 +1,40 @@
-const db = require("../config/db");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const User = require("../models/User")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
-exports.registerUser = (req, res) => {
-  const { name, email, password } = req.body;
+exports.registerUser = async (req, res) => {
+  const { name, email, password } = req.body
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+  const hashedPassword = bcrypt.hashSync(password, 10)
 
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword
+  })
 
-  const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+  res.status(201).json({ message: "User registered" })
+}
 
-  db.query(sql, [name, email, hashedPassword], (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body
 
-    res.status(201).json({ message: "User registered successfully" });
-  });
-};
+  const user = await User.findOne({ email })
+  if (!user) return res.status(400).json({ message: "Invalid credentials" })
 
-exports.loginUser = (req, res) => {
-  const { email, password } = req.body;
+  const match = bcrypt.compareSync(password, user.password)
+  if (!match) return res.status(400).json({ message: "Invalid credentials" })
 
-  const sql = "SELECT * FROM users WHERE email = ?";
+  const token = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  )
 
-  db.query(sql, [email], (err, result) => {
-    if (err || result.length === 0) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
+  res.json({ token })
+}
 
-    const user = result[0];
-    const isMatch = bcrypt.compareSync(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign(
-      { id: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.json({ token });
-  });
-};
-
-exports.getMe = (req, res) => {
-  const userId = req.user.id;
-
-  const sql = "SELECT id, name, email, created_at FROM users WHERE id = ?";
-
-  db.query(sql, [userId], (err, result) => {
-    if (err || result.length === 0) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json(result[0]);
-  });
-};
+exports.getMe = async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password")
+  res.json(user)
+}
