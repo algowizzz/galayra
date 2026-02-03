@@ -1,66 +1,72 @@
-import { useParams } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { useCart } from "../context/CartContext"
-import "../styles/main.css"
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
+import "../styles/main.css";
 
 export default function ProductDetail() {
-  const { id } = useParams()
-  const { addToCart } = useCart()
+  const { id } = useParams();
+  const { addToCart } = useCart();
 
-  const [product, setProduct] = useState(null)
-  const [quantity, setQuantity] = useState(1)
-  const [selectedImage, setSelectedImage] = useState("")
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     fetch(`http://localhost:3000/api/products/${id}`)
       .then(res => res.json())
       .then(data => {
-        setProduct(data)
-        setSelectedImage(data.image_url)
+        setProduct(data);
+        setSelectedImage(data.image_url);
       })
-      .catch(err => console.error(err))
-  }, [id])
+      .catch(console.error);
+  }, [id]);
 
-  if (!product) {
-    return <div className="loading">Loading product…</div>
-  }
+  if (!product) return <div className="loading">Loading…</div>;
+
+  const variant = product.variants?.[0];
 
   const handleAddToCart = () => {
     addToCart(
       {
-        id: product.id,
+        product_id: product._id,
+        variant_id: variant.printify_variant_id,
         title: product.title,
-        price: product.variants?.[0]?.price,
-        image: product.image_url
+        price: variant.price,
+        image_url: product.image_url
       },
       quantity
-    )
-  }
+    );
+  };
+
+  const thumbnails = [
+    product.image_url,
+    product.image_url,
+    product.image_url,
+    product.image_url
+  ];
 
   return (
     <section className="product-page">
       <div className="product-layout">
         <div className="product-thumbnails">
-          {[product.image_url, product.image_url, product.image_url].map(
-            (img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt=""
-                className={selectedImage === img ? "thumb active" : "thumb"}
-                onClick={() => setSelectedImage(img)}
-              />
-            )
-          )}
+          {thumbnails.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt=""
+              className={`thumb ${selectedImage === img ? "active" : ""}`}
+              onClick={() => setSelectedImage(img)}
+            />
+          ))}
         </div>
 
         <div className="product-main-image">
           <img src={selectedImage} alt={product.title} />
         </div>
-
         <div className="product-info">
           <h1>{product.title}</h1>
-          <p className="price">${product.variants?.[0]?.price}</p>
+          <p className="price">${variant.price}</p>
+
           <div
             className="description"
             dangerouslySetInnerHTML={{ __html: product.description }}
@@ -79,6 +85,7 @@ export default function ProductDetail() {
             Add to Cart
           </button>
         </div>
+
       </div>
     </section>
   );

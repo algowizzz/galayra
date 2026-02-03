@@ -1,5 +1,5 @@
-import { useCart } from "../context/CartContext"
-import "../styles/main.css"
+import { FaTrash } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 
 export default function CartDrawer() {
   const {
@@ -11,7 +11,7 @@ export default function CartDrawer() {
   } = useCart();
 
   const total = cartItems.reduce(
-    (sum, i) => sum + i.price * i.quantity,
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
 
@@ -24,59 +24,83 @@ export default function CartDrawer() {
         />
       )}
 
-      <aside className={`cart-panel ${isCartOpen ? "open" : ""}`}>
+      <aside className={`cart-drawer ${isCartOpen ? "open" : ""}`}>
         <div className="cart-header">
-          <h2>Cart ({cartItems.length} item)</h2>
-          <button onClick={() => setIsCartOpen(false)}>✕</button>
+          <h2>Cart ({cartItems.length} items)</h2>
+          <button
+            className="cart-close"
+            onClick={() => setIsCartOpen(false)}
+          >
+            ×
+          </button>
         </div>
 
-        {cartItems.map(item => (
-          <div key={item.id} className="cart-item">
-            <img src={item.image} alt={item.title} />
+        <div className="cart-body">
+          {cartItems.length === 0 && (
+            <p>Your cart is empty</p>
+          )}
 
-            <div className="cart-item-details">
-              <p className="item-title">{item.title}</p>
-              <p className="item-price">${item.price}</p>
-              <p className="item-variant">Size: Medium</p>
+          {cartItems.map(item => (
+            <div className="cart-item" key={item._id}>
+              <img src={item.image_url} alt={item.title} />
 
-              <div className="qty-control">
-                <button onClick={() => updateQty(item.id, item.quantity - 1)}>−</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => updateQty(item.id, item.quantity + 1)}>+</button>
+              <div className="cart-info">
+                <div className="cart-title">{item.title}</div>
+                <div className="cart-price">${item.price}</div>
+                <div className="cart-variant">
+                  Variant: {item.variant_id}
+                </div>
+
+                <div className="cart-qty">
+                  <button
+                    onClick={() =>
+                      updateQty(item._id, Math.max(1, item.quantity - 1))
+                    }
+                  >
+                    −
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button
+                    onClick={() =>
+                      updateQty(item._id, item.quantity + 1)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div className="cart-right">
+                <button
+                  className="cart-remove"
+                  onClick={() => removeFromCart(item._id)}
+                >
+                <FaTrash />
+                </button>
+                <div className="cart-total">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </div>
               </div>
             </div>
-
-            <div className="item-total">
-              ${ (item.price * item.quantity).toFixed(2) }
-              <span onClick={() => removeFromCart(item.id)}>🗑</span>
-            </div>
-          </div>
-        ))}
-
-        <hr />
-
-        <div className="promo">
-          <span>🏷</span>
-          <p>Enter a promo code</p>
+          ))}
         </div>
 
-        <hr />
-
-        <div className="summary">
-          <div className="row">
+        <div className="cart-footer">
+          <div className="summary-row">
             <span>Estimated total</span>
-            <strong>${total.toFixed(2)}</strong>
+            <span>${total.toFixed(2)}</span>
           </div>
-          <p className="note">
+
+          <p className="summary-note">
             Taxes and shipping are calculated at checkout.
           </p>
+
+          <button className="checkout-btn">Checkout</button>
+          <button className="view-cart-btn">View Cart</button>
+
+          <div className="secure">🔒 Secure Checkout</div>
         </div>
-
-        <button className="checkout-btn">Checkout</button>
-        <button className="view-cart-btn">View Cart</button>
-
-        <p className="secure">🔒 Secure Checkout</p>
       </aside>
     </>
-  )
+  );
 }

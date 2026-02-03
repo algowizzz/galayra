@@ -9,7 +9,8 @@ export default function HomeProducts() {
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
       .then(res => res.json())
-      .then(data => setProducts(data.slice(0, 8)));
+      .then(data => setProducts(data.slice(0, 8)))
+      .catch(err => console.error(err));
   }, []);
 
   const scrollLeft = () => {
@@ -29,6 +30,7 @@ export default function HomeProducts() {
   return (
     <section className="home-products">
       <h2 className="section-title">New In Store</h2>
+
       <button className="scroll-btn left" onClick={scrollLeft}>
         ‹
       </button>
@@ -44,8 +46,8 @@ export default function HomeProducts() {
 
           return (
             <Link
-              key={product.id}
-              to={`/product/${product.id}`}
+              key={product._id}
+              to={`/product/${product._id}`}
               className="product-card"
             >
               <div className="card-image-wrapper">

@@ -47,7 +47,7 @@ export default function Navbar() {
           </div>
           <div className="nav-cart" onClick={() => setIsCartOpen(true)}>
             <FaShoppingBag />
-            <span>Cart ({cartItems.length})</span>
+            <span>Cart ({cartCount})</span>
           </div>
         </div>
       </nav>

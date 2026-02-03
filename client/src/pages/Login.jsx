@@ -1,43 +1,29 @@
 import { useState } from "react";
+import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log({ email, password });
+
+    const res = await api.post("/users/login", {
+      email,
+      password
+    });
+
+    localStorage.setItem("token", res.data.token);
+    navigate("/");
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-box">
-        <h2>Log In</h2>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <button type="submit">Log In</button>
-        </form>
-
-        <p className="auth-footer">
-          Don’t have an account? <a href="/signup">Sign up</a>
-        </p>
-      </div>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input onChange={e => setEmail(e.target.value)} />
+      <input type="password" onChange={e => setPassword(e.target.value)} />
+      <button>Login</button>
+    </form>
   );
 }

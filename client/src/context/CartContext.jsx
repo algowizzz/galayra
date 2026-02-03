@@ -1,43 +1,56 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "../api/axios";
 
-const CartContext = createContext()
+const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([])
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const addToCart = (product, qty = 1) => {
-    setCartItems(prev => {
-      const existing = prev.find(i => i.id === product.id)
-      if (existing) {
-        return prev.map(i =>
-          i.id === product.id
-            ? { ...i, quantity: i.quantity + qty }
-            : i
-        )
-      }
-      return [...prev, { ...product, quantity: qty }]
-    });
-    setIsCartOpen(true)
+  const fetchCart = async () => {
+    try {
+      const res = await api.get("/cart");
+      setCartItems(res.data.items || []);
+    } catch {
+      setCartItems([]);
+    }
   };
 
-  const removeFromCart = id =>
-    setCartItems(prev => prev.filter(i => i.id !== id))
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
-  const updateQty = (id, qty) =>
-    setCartItems(prev =>
-      prev.map(i =>
-        i.id === id ? { ...i, quantity: Math.max(1, qty) } : i
-      )
-    )
+  const addToCart = async (product, quantity = 1) => {
+    await api.post("/cart", {
+      ...product,
+      quantity
+    });
+    fetchCart();
+  }
+
+  const updateQty = async (cartItemId, quantity) => {
+    await api.put(`/cart/${cartItemId}`, { quantity });
+    fetchCart();
+  };
+
+  const removeFromCart = async (cartItemId) => {
+    await api.delete(`/cart/${cartItemId}`);
+    fetchCart();
+  };
+
+  const cartCount = cartItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
+        cartCount,
         addToCart,
-        removeFromCart,
         updateQty,
+        removeFromCart,
         isCartOpen,
         setIsCartOpen
       }}

@@ -13,13 +13,19 @@ export default function Home() {
 
   useEffect(() => {
     if (location.state?.scrollTo === "about") {
-      aboutRef.current?.scrollIntoView({ behavior: "smooth" });
+      aboutRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
-    if (location.state?.scrollTo === "contact") {
-      footerRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (location.state?.scrollTo === "footer") {
+      document
+        .getElementById("footer")
+        ?.scrollIntoView({ behavior: "smooth" })
     }
-  }, [location, navigate]);
+
+    if (location.state?.scrollTo) {
+      navigate("/", { replace: true })
+    }
+  }, [location, navigate])
 
   return (
     <>

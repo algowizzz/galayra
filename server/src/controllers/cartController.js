@@ -1,8 +1,18 @@
 const Cart = require("../models/Cart")
 
+const getUserId = req => req.user?.id || "guest"
+
 exports.addToCart = async (req, res) => {
-  const userId = req.user.id
-  const { product, variant_id, quantity } = req.body
+  const userId = getUserId(req)
+
+  const {
+    product_id,
+    variant_id,
+    title,
+    price,
+    image_url,
+    quantity = 1
+  } = req.body
 
   let cart = await Cart.findOne({ user_id: userId })
 
@@ -14,13 +24,20 @@ exports.addToCart = async (req, res) => {
   }
 
   const existing = cart.items.find(
-    i => i.variant_id === variant_id
+    i => i.variant_id === String(variant_id)
   )
 
   if (existing) {
     existing.quantity += quantity
   } else {
-    cart.items.push({ ...product, variant_id, quantity })
+    cart.items.push({
+      product_id,
+      variant_id: String(variant_id),
+      title,
+      price,
+      image_url,
+      quantity
+    })
   }
 
   await cart.save()
@@ -28,23 +45,37 @@ exports.addToCart = async (req, res) => {
 }
 
 exports.getMyCart = async (req, res) => {
-  const cart = await Cart.findOne({ user_id: req.user.id })
+  const userId = getUserId(req)
+
+  const cart = await Cart.findOne({ user_id: userId })
   res.json(cart || { items: [] })
 }
 
 exports.updateCartItem = async (req, res) => {
-  const cart = await Cart.findOne({ user_id: req.user.id })
+  const userId = getUserId(req)
+
+  const cart = await Cart.findOne({ user_id: userId })
+  if (!cart) return res.json({ items: [] })
 
   const item = cart.items.id(req.params.id)
-  item.quantity = req.body.quantity
+  if (!item) return res.status(404).json({ message: "Item not found" })
 
+  item.quantity = req.body.quantity
   await cart.save()
+
   res.json(cart)
 }
 
 exports.removeFromCart = async (req, res) => {
-  const cart = await Cart.findOne({ user_id: req.user.id })
-  cart.items.id(req.params.id).remove()
+  const userId = getUserId(req)
+
+  const cart = await Cart.findOne({ user_id: userId })
+  if (!cart) return res.json({ items: [] })
+
+  cart.items = cart.items.filter(
+    item => item._id.toString() !== req.params.id
+  )
+
   await cart.save()
   res.json(cart)
 }

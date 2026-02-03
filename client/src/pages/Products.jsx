@@ -32,11 +32,11 @@ export default function Products() {
           const compareAt = product.compare_at_price;
 
           return (
-            <Link
-              key={product.id}
-              to={`/product/${product.id}`}
-              className="product-card"
-            >
+              <Link
+                key={product._id}
+                to={`/product/${product._id}`}
+                className="product-card"
+              >
               <div className="image-box">
                 {compareAt && <span className="badge">-20%</span>}
                 <img src={product.image_url} alt={product.title} />
