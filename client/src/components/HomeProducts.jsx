@@ -1,31 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import "../styles/main.css";
+import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
+import "../styles/main.css"
 
 export default function HomeProducts() {
-  const [products, setProducts] = useState([]);
-  const scrollRef = useRef(null);
+  const [products, setProducts] = useState([])
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
       .then(res => res.json())
       .then(data => setProducts(data.slice(0, 8)))
-      .catch(err => console.error(err));
-  }, []);
+      .catch(err => console.error(err))
+  }, [])
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({
       left: -300,
       behavior: "smooth",
-    });
-  };
+    })
+  }
 
   const scrollRight = () => {
     scrollRef.current.scrollBy({
       left: 300,
       behavior: "smooth",
-    });
-  };
+    })
+  }
 
   return (
     <section className="home-products">
@@ -69,9 +69,9 @@ export default function HomeProducts() {
                 <span className="new-price">${price}</span>
               </div>
             </Link>
-          );
+          )
         })}
       </div>
     </section>
-  );
+  )
 }

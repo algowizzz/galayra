@@ -1,15 +1,15 @@
-import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Hero from "../components/Hero";
-import HomeProducts from "../components/HomeProducts";
-import Categories from "../components/Categories";
-import About from "../components/About";
+import { useEffect, useRef } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import Hero from "../components/Hero"
+import HomeProducts from "../components/HomeProducts"
+import Categories from "../components/Categories"
+import About from "../components/About"
 
 export default function Home() {
-  const aboutRef = useRef(null);
-  const footerRef = useRef(null);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const aboutRef = useRef(null)
+  const footerRef = useRef(null)
+  const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (location.state?.scrollTo === "about") {
@@ -34,5 +34,5 @@ export default function Home() {
       <Categories />
       <About ref={aboutRef} />
     </>
-  );
+  )
 }

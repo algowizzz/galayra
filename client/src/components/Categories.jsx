@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import "../styles/main.css";
-import bannerImg from "../assets/one.png";
+import { Link } from "react-router-dom"
+import "../styles/main.css"
+import bannerImg from "../assets/one.png"
 
 export default function Categories() {
   return (
@@ -32,5 +32,5 @@ export default function Categories() {
         />
       </svg>
     </section>
-  );
+  )
 }

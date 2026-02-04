@@ -40,7 +40,7 @@ export default forwardRef(function Footer(_, ref) {
           <p>galayra.business@gmail.com</p>
 
           <div className="socials">
-            <FaInstagram />
+            <FaInstagram onClick={"https://www.instagram.com/galayra.in/"}/>
             <FaFacebookF />
             <FaPinterestP />
           </div>

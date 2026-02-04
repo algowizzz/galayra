@@ -1,47 +1,47 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/axios";
+import { createContext, useContext, useEffect, useState } from "react"
+import api from "../api/axios"
 
-const CartContext = createContext();
+const CartContext = createContext()
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   const fetchCart = async () => {
     try {
-      const res = await api.get("/cart");
-      setCartItems(res.data.items || []);
+      const res = await api.get("/cart")
+      setCartItems(res.data.items || [])
     } catch {
-      setCartItems([]);
+      setCartItems([])
     }
-  };
+  }
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    fetchCart()
+  }, [])
 
   const addToCart = async (product, quantity = 1) => {
     await api.post("/cart", {
       ...product,
       quantity
-    });
-    fetchCart();
+    })
+    fetchCart()
   }
 
   const updateQty = async (cartItemId, quantity) => {
-    await api.put(`/cart/${cartItemId}`, { quantity });
-    fetchCart();
-  };
+    await api.put(`/cart/${cartItemId}`, { quantity })
+    fetchCart()
+  }
 
   const removeFromCart = async (cartItemId) => {
-    await api.delete(`/cart/${cartItemId}`);
-    fetchCart();
-  };
+    await api.delete(`/cart/${cartItemId}`)
+    fetchCart()
+  }
 
   const cartCount = cartItems.reduce(
     (sum, item) => sum + item.quantity,
     0
-  );
+  )
 
   return (
     <CartContext.Provider
@@ -57,7 +57,7 @@ export const CartProvider = ({ children }) => {
     >
       {children}
     </CartContext.Provider>
-  );
-};
+  )
+}
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => useContext(CartContext)

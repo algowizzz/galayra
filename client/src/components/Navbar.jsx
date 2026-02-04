@@ -1,24 +1,26 @@
 import { FaSearch, FaUser, FaShoppingBag } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
 import "../styles/main.css"
 import { useCart } from "../context/CartContext"
+import SearchOverlay from "./SearchOverlay"
 
 export default function Navbar() {
-  const { cartCount } = useCart()
+  const { cartCount, setIsCartOpen } = useCart()
   const navigate = useNavigate()
-  const { setIsCartOpen, cartItems } = useCart()
 
-  const goToShop = () => {
-    navigate("/products");
-  }
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [products, setProducts] = useState([])
 
-  const goToAbout = () => {
-    navigate("/", { state: { scrollTo: "about" } })
-  }
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products")
+      .then(res => res.json())
+      .then(data => setProducts(data))
+  }, [])
 
-  const goToContact = () => {
-    navigate("/", { state: { scrollTo: "footer" } })
-  }
+  const goToShop = () => navigate("/products");
+  const goToAbout = () => navigate("/", { state: { scrollTo: "about" } })
+  const goToContact = () => navigate("/", { state: { scrollTo: "footer" } })
 
   return (
     <>
@@ -28,7 +30,10 @@ export default function Navbar() {
 
       <nav className="navbar">
         <div className="nav-left">
-          <FaSearch className="nav-icon" />
+          <FaSearch
+            className="nav-icon"
+            onClick={() => setSearchOpen(true)} 
+          />
         </div>
 
         <div className="nav-center">
@@ -51,6 +56,12 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      <SearchOverlay
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        products={products}
+      />
     </>
   )
 }

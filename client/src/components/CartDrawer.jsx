@@ -1,19 +1,21 @@
-import { FaTrash } from "react-icons/fa";
-import { useCart } from "../context/CartContext";
+import { FaTrash } from "react-icons/fa"
+import { useCart } from "../context/CartContext"
+import { useNavigate } from "react-router-dom"
 
 export default function CartDrawer() {
+  const navigate = useNavigate()
   const {
     cartItems,
     updateQty,
     removeFromCart,
     isCartOpen,
     setIsCartOpen
-  } = useCart();
+  } = useCart()
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
-  );
+  )
 
   return (
     <>
@@ -48,7 +50,7 @@ export default function CartDrawer() {
                 <div className="cart-title">{item.title}</div>
                 <div className="cart-price">${item.price}</div>
                 <div className="cart-variant">
-                  Variant: {item.variant_id}
+                  {item.title}
                 </div>
 
                 <div className="cart-qty">
@@ -96,11 +98,18 @@ export default function CartDrawer() {
           </p>
 
           <button className="checkout-btn">Checkout</button>
-          <button className="view-cart-btn">View Cart</button>
-
-          <div className="secure">🔒 Secure Checkout</div>
+          <button
+            className="view-cart-btn"
+            onClick={() => {
+              setIsCartOpen(false);
+              navigate("/cart");
+            }}
+          >
+            View Cart
+          </button>
+          <div className="secure">Secure Checkout</div>
         </div>
       </aside>
     </>
-  );
+  )
 }

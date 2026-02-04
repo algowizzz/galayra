@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import "../styles/main.css";
-import heroImg from "../assets/one.png";
+import { Link } from "react-router-dom"
+import "../styles/main.css"
+import heroImg from "../assets/one.png"
 
 export default function Hero() {
   return (
@@ -25,5 +25,5 @@ export default function Hero() {
         <img src={heroImg} alt="Hero" />
       </div>
     </section>
-  );
+  )
 }

@@ -8,6 +8,7 @@ import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import ScrollToTop from "./components/ScrollTop"
 import CartDrawer from "./components/CartDrawer"
+import CartPage from "./pages/CartPage"
 
 import "./styles/main.css";
 
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
       </main>
       <Footer />

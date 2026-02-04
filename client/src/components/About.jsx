@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef } from "react"
 
 export default forwardRef(function About(props, ref) {
   return (
@@ -16,5 +16,5 @@ export default forwardRef(function About(props, ref) {
         </p>
       </div>
     </section>
-  );
-});
+  )
+})
