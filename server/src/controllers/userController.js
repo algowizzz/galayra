@@ -1,40 +1,69 @@
-const User = require("../models/User")
-const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body
+  try {
+    const { name, email, password } = req.body;
 
-  const hashedPassword = bcrypt.hashSync(password, 10)
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
 
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword
-  })
+    const user = await User.create({
+      name,
+      email,
+      password
+    });
 
-  res.status(201).json({ message: "User registered" })
-}
+    res.json({ message: "User registered successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Registration failed" });
+  }
+};
 
 exports.loginUser = async (req, res) => {
-  const { email, password } = req.body
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email })
-  if (!user) return res.status(400).json({ message: "Invalid credentials" })
+    const user = await User.findOne({ email });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-  const match = bcrypt.compareSync(password, user.password)
-  if (!match) return res.status(400).json({ message: "Invalid credentials" })
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-  const token = jwt.sign(
-    { id: user._id },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  )
-
-  res.json({ token })
-}
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ message: "Login failed" });
+  }
+};
 
 exports.getMe = async (req, res) => {
-  const user = await User.findById(req.user.id).select("-password")
-  res.json(user)
-}
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch {
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, avatar } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, avatar, gender, phone },
+      { new: true }
+    ).select("-password");
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Profile update failed" });
+  }
+};
