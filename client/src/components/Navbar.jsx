@@ -1,16 +1,21 @@
-import { FaSearch, FaUser, FaShoppingBag } from "react-icons/fa"
+import { FaSearch, FaShoppingBag } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import "../styles/main.css"
 import { useCart } from "../context/CartContext"
+import { useAuth } from "../context/AuthContext"
 import SearchOverlay from "./SearchOverlay"
 
 export default function Navbar() {
   const { cartCount, setIsCartOpen } = useCart()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   const [searchOpen, setSearchOpen] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
   const [products, setProducts] = useState([])
+
+  const accountRef = useRef(null)
 
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
@@ -18,7 +23,18 @@ export default function Navbar() {
       .then(data => setProducts(data))
   }, [])
 
-  const goToShop = () => navigate("/products");
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (accountRef.current && !accountRef.current.contains(e.target)) {
+        setAccountOpen(false)
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside)
+    return () => document.removeEventListener("click", handleClickOutside)
+  }, [])
+
+  const goToShop = () => navigate("/products")
   const goToAbout = () => navigate("/", { state: { scrollTo: "about" } })
   const goToContact = () => navigate("/", { state: { scrollTo: "footer" } })
 
@@ -32,12 +48,12 @@ export default function Navbar() {
         <div className="nav-left">
           <FaSearch
             className="nav-icon"
-            onClick={() => setSearchOpen(true)} 
+            onClick={() => setSearchOpen(true)}
           />
         </div>
 
         <div className="nav-center">
-          <h1 className="logo">GALAYRA</h1>
+          <h1 className="logo" onClick={() => navigate("/")}>GALAYRA</h1>
           <div className="nav-links">
             <button onClick={goToShop} className="nav-btn">Shop</button>
             <button onClick={goToAbout} className="nav-btn">About</button>
@@ -46,10 +62,57 @@ export default function Navbar() {
         </div>
 
         <div className="nav-right">
-          <div className="nav-account">
-            <FaUser />
-            <Link to="/login">Log In</Link>
-          </div>
+          {user ? (
+            <div className="account-wrapper" ref={accountRef}>
+              <div
+                className="account-trigger"
+                onClick={() => setAccountOpen(prev => !prev)}
+              >
+                <img
+                  src={user.avatar || "/default-avatar.png"}
+                  alt="profile"
+                  className="nav-avatar"
+                />
+                <span className="account-name">{user.name}</span>
+              </div>
+
+              {accountOpen && (
+                <div className="account-dropdown">
+                  <div
+                    className="dropdown-item"
+                    onClick={() => {
+                      navigate("/profile")
+                      setAccountOpen(false)
+                    }}
+                  >
+                    My Profile
+                  </div>
+
+                  <div className="dropdown-item">Orders</div>
+                  <div className="dropdown-item">Wishlist</div>
+                  <div className="dropdown-item">Notifications</div>
+
+                  <div className="dropdown-divider" />
+
+                  <div
+                    className="dropdown-item logout"
+                    onClick={() => {
+                      logout()
+                      setAccountOpen(false)
+                      navigate("/")
+                    }}
+                  >
+                    Logout
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="nav-account">
+              <Link to="/login">Log In</Link>
+            </div>
+          )}
+
           <div className="nav-cart" onClick={() => setIsCartOpen(true)}>
             <FaShoppingBag />
             <span>Cart ({cartCount})</span>
