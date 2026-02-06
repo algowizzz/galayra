@@ -33,12 +33,11 @@
 
 .cc-brand {
   font-family: "Playfair Display", serif;
-  font-size: 26px;
   font-weight: 700;
+  font-size: 26px;
+  color: #135237;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--green), #1a6b48);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .cc-nav-center {
@@ -47,14 +46,16 @@
 }
 
 .cc-nav-center span {
-  cursor: pointer;
+  font-family: "Outfit", sans-serif;
   font-weight: 500;
-  color: #6b7280;
-  transition: color .3s;
+  font-size: 16px;
+  color: #4b5563;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .cc-nav-center span:hover {
-  color: var(--green);
+  color: #135237;
 }
 
 .cc-nav-right {
@@ -364,30 +365,36 @@
   }
 }
 
-/* ---------- BESTSELLERS ---------- */
+/* =========================
+   BESTSELLERS SECTION
+========================= */
+
 .bestsellers {
-  padding: 120px 32px;
-  background: #ffffff;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 100px 48px;
 }
 
 .bestsellers-header {
-  max-width: 1200px;
-  margin: 0 auto 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 60px;
 }
 
 .bestsellers-header h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-size: 42px;
-  color: #135237;
-  margin-bottom: 6px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #135237, #1a6b48);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .bestsellers-header p {
-  color: #4b5563;
+  color: #6b7280;
   font-size: 16px;
+  margin-top: 6px;
 }
 
 .filter-tabs {
@@ -399,58 +406,73 @@
   padding: 10px 22px;
   border-radius: 999px;
   border: none;
-  font-weight: 600;
-  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
   background: #f3f4f6;
-  color: #374151;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
 .filter-tabs button.active {
   background: #135237;
-  color: white;
+  color: #ffffff;
 }
 
-.filter-tabs button:last-child {
-  border: 2px solid #2563eb;
-  background: white;
+.filter-tabs button:hover {
+  background: #fffcd1;
+  color: #135237;
 }
 
 .bestsellers-grid {
-  max-width: 1200px;
-  margin: auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
 }
 
 .bestseller-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.35s ease;
+}
+
+.bestseller-card:hover {
+  transform: translateY(-12px) scale(1.02);
 }
 
 .card-image {
   position: relative;
-  background: #fffbd5;
   border-radius: 28px;
-  padding: 32px;
-  display: flex;
-  justify-content: center;
+  padding: 28px;
+  margin-bottom: 18px;
+  background: #fffcd1;
+}
+
+.bestseller-card:nth-child(2) .card-image {
+  background: #f3f4f6;
+}
+.bestseller-card:nth-child(3) .card-image {
+  background: rgba(19, 82, 55, 0.1);
 }
 
 .card-image img {
+  width: 130px;
   height: 260px;
-  border-radius: 24px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 32px;
+  background: #135237;
+  padding: 18px;
 }
 
 .badge {
   position: absolute;
   top: 18px;
   left: 18px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
 }
 
 .badge.sale {
@@ -459,18 +481,53 @@
 }
 
 .badge.new {
-  background: #e5f5ea;
+  background: #fffcd1;
   color: #135237;
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  transition: all 0.25s ease;
+}
+
+.bestseller-card:hover .wishlist-btn {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.wishlist-btn:hover {
+  background: #135237;
+  color: #ffffff;
 }
 
 .bestseller-card h3 {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
 }
 
 .device {
-  color: #6b7280;
   font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 14px;
 }
 
 .price-row {
@@ -486,50 +543,67 @@
 }
 
 .old-price {
-  text-decoration: line-through;
+  font-size: 14px;
   color: #9ca3af;
-  margin-right: 6px;
+  text-decoration: line-through;
+  margin-right: 8px;
 }
 
 .add-btn {
   background: #135237;
   color: white;
-  padding: 10px 18px;
+  padding: 8px 18px;
   border-radius: 999px;
-  font-weight: 600;
-  text-decoration: none;
   font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.25s ease;
+}
+
+.add-btn:hover {
+  background: #0f3d29;
 }
 
 .view-all {
-  margin-top: 80px;
   text-align: center;
+  margin-top: 70px;
 }
 
 .view-all a {
+  display: inline-block;
   padding: 16px 36px;
   border-radius: 999px;
   border: 2px solid #135237;
   color: #135237;
   font-weight: 600;
   text-decoration: none;
+  transition: all 0.25s ease;
 }
 
-@media (max-width: 1024px) {
+.view-all a:hover {
+  background: #135237;
+  color: white;
+}
+
+@media (max-width: 1200px) {
   .bestsellers-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 640px) {
-  .bestsellers-grid {
-    grid-template-columns: 1fr;
+  .bestsellers {
+    padding: 70px 24px;
   }
 
   .bestsellers-header {
     flex-direction: column;
-    gap: 20px;
     align-items: flex-start;
+    gap: 24px;
+  }
+
+  .bestsellers-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -941,4 +1015,157 @@
   .footer-top {
     grid-template-columns: 1fr;
   }
+}
+
+/* PRODUCTS */
+.products-page {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.products-hero {
+  background: #fffde8;
+  padding: 90px 80px 70px;
+}
+
+.back-home {
+  background: none;
+  border: none;
+  color: #14532d;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+.products-hero h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 68px;
+  color: #14532d;
+  margin-bottom: 12px;
+}
+
+.products-hero p {
+  font-size: 20px;
+  color: #4b5563;
+}
+
+.products-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 80px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.filter-pills {
+  margin-top: 14px;
+  display: flex;
+  gap: 14px;
+}
+
+.pill {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: none;
+  background: #e5e7eb;
+  font-weight: 600;
+  cursor: pointer;
+  color: #374151;
+}
+
+.pill.active {
+  background: #14532d;
+  color: white;
+}
+
+.sort select {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #e5e7eb;
+  font-weight: 600;
+}
+
+.products-grid {
+  padding: 70px 80px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+
+.product-card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-image-wrapper {
+  background: #fef9c3;
+  padding: 26px;
+  border-radius: 28px;
+}
+
+.card-image-bg {
+  background: #14532d;
+  height: 230px;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-image-bg img {
+  max-height: 70%;
+  object-fit: contain;
+}
+
+.card-title {
+  margin-top: 18px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.card-model {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 6px 0 12px;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #14532d;
+}
+
+.add-btn {
+  background: #14532d;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #0f3d29;
+}
+
+.no-products {
+  font-size: 18px;
+  color: #6b7280;
 }

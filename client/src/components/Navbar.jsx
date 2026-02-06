@@ -1,7 +1,7 @@
 import { FaSearch, FaShoppingBag } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
-import "../styles/style.css"
+import "../styles/newstyles.css"
 import { useCart } from "../context/CartContext"
 import { useAuth } from "../context/AuthContext"
 import SearchOverlay from "./SearchOverlay"
@@ -40,28 +40,40 @@ export default function Navbar() {
     <>
       <nav className="cc-navbar">
         <div className="cc-navbar-inner">
+
+          {/* LEFT */}
           <div className="cc-nav-left">
             <h1 className="cc-brand" onClick={() => navigate("/")}>
               GALAYRA
             </h1>
           </div>
 
+          {/* CENTER */}
           <div className="cc-nav-center">
-            <span onClick={goToShop}>Shop</span>
-            <span onClick={goToAbout}>Features</span>
-            <span onClick={goToContact}>Reviews</span>
+            <button onClick={goToShop}>Shop</button>
+            <button onClick={goToAbout}>Features</button>
+            <button onClick={goToContact}>Reviews</button>
           </div>
 
+          {/* RIGHT */}
           <div className="cc-nav-right">
-            <FaSearch
+
+            <button
               className="cc-nav-icon"
               onClick={() => setSearchOpen(true)}
-            />
+            >
+              <FaSearch />
+            </button>
 
-            <div className="cc-cart" onClick={() => setIsCartOpen(true)}>
+            <button
+              className="cc-cart"
+              onClick={() => setIsCartOpen(true)}
+            >
               <FaShoppingBag />
-              <span className="cc-cart-badge">{cartCount}</span>
-            </div>
+              {cartCount > 0 && (
+                <span className="cc-cart-badge">{cartCount}</span>
+              )}
+            </button>
 
             {user ? (
               <div className="cc-account" ref={accountRef}>
@@ -90,7 +102,7 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="cc-login">Log In</Link>
+              <Link to="/login" className="cc-login">Sign In</Link>
             )}
           </div>
         </div>

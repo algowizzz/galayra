@@ -33,8 +33,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <HomeProducts />
       <Categories />
+      <HomeProducts />
       <Features />
       <Reviews />
       <Newsletter />

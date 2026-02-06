@@ -37,7 +37,9 @@ export default function HomeProducts() {
               <div className="card-image">
                 {compareAt && <span className="badge sale">-20%</span>}
                 {!compareAt && <span className="badge new">NEW</span>}
-
+                <button className="wishlist-btn">
+                  ♡
+                </button>
                 <img src={product.image_url} alt={product.title} />
               </div>
 

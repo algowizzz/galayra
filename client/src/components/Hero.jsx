@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
-import "../styles/style.css"
+import "../styles/newstyles.css"
+// import "../styles/newstyles.css"
 
 export default function Hero() {
   return (

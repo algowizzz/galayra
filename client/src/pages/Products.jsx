@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { Link, useSearchParams } from "react-router-dom"
-import "../styles/main.css"
+import { Link, useSearchParams, useNavigate } from "react-router-dom"
+import "../styles/style.css"
 
 export default function Products() {
   const [products, setProducts] = useState([])
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   const searchQuery = searchParams.get("search")?.toLowerCase() || ""
 
@@ -19,25 +20,43 @@ export default function Products() {
   )
 
   return (
-    <section className="category-page">
-      <div className="category-header">
-        <h1>Mobile Cases</h1>
-        <p>
-          This is your category description. It's a great place to tell customers
-          what this category is about.
-        </p>
+    <div className="products-page">
+      <div className="products-hero">
+        <button className="back-home" onClick={() => navigate("/")}>
+          ← Back to Home
+        </button>
+
+        <h1>All Products</h1>
+        <p>Explore our complete collection of premium phone cases</p>
       </div>
 
-      <div className="product-count">
-        {filteredProducts.length} products
+      <div className="products-toolbar">
+        <div className="filters">
+          <span className="filter-label">FILTERS</span>
+          <div className="filter-pills">
+            <button className="pill active">All</button>
+            <button className="pill">iPhone</button>
+            <button className="pill">Samsung</button>
+            <button className="pill">Google Pixel</button>
+          </div>
+        </div>
+
+        <div className="sort">
+          <label>Sort by:</label>
+          <select>
+            <option>Newest</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+          </select>
+        </div>
       </div>
 
-      <div className="product-grid">
+      <div className="products-grid">
         {filteredProducts.length === 0 ? (
-          <p>No products found.</p>
+          <p className="no-products">No products found.</p>
         ) : (
           filteredProducts.map(product => {
-            const price = product.variants?.[0]?.price;
+            const price = product.variants?.[0]?.price
 
             return (
               <Link
@@ -45,24 +64,27 @@ export default function Products() {
                 to={`/product/${product._id}`}
                 className="product-card"
               >
-                <div className="image-box">
-                  <img
-                    src={product.image_url}
-                    alt={product.title}
-                  />
+                <div className="card-image-wrapper">
+                  <div className="card-image-bg">
+                    <img
+                      src={product.image_url}
+                      alt={product.title}
+                    />
+                  </div>
                 </div>
 
-                <div className="product-info">
-                  <p className="product-title">{product.title}</p>
-                  <div className="product-price">
-                    <span className="new-price">${price}</span>
-                  </div>
+                <h3 className="card-title">{product.title}</h3>
+                <p className="card-model">{product.model || ""}</p>
+
+                <div className="card-bottom">
+                  <span className="card-price">${price}</span>
+                  <button className="add-btn">Add</button>
                 </div>
               </Link>
             )
           })
         )}
       </div>
-    </section>
+    </div>
   )
 }
