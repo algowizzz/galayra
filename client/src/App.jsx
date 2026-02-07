@@ -8,7 +8,7 @@ import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import ScrollToTop from "./components/ScrollTop"
 import CartDrawer from "./components/CartDrawer"
-import CartPage from "./pages/CartPage"
+import Cart from "./pages/Cart"
 import Profile from "./pages/Profile"
 import OAuthSuccess from "./pages/OauthSuccess"
 
@@ -27,7 +27,7 @@ export default function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/cart" element={<CartPage />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
         </Routes>
