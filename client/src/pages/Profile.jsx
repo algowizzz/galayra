@@ -1,65 +1,139 @@
-import { useAuth } from "../context/AuthContext";
-import "../styles/main.css";
+import { useState } from "react"
+import { useAuth } from "../context/AuthContext"
+import api from "../api/axios"
+import "../styles/main.css"
 
-export default function Profile() {
-  const { user } = useAuth();
+export default function Account() {
+  const { user, logout, setUser } = useAuth();
+  const [active, setActive] = useState("personal");
+  const [editing, setEditing] = useState(false);
 
-  if (!user) return null;
+  const [form, setForm] = useState({
+    name: user?.name || "",
+    phone: user?.phone || "",
+    dob: user?.dob || "",
+    gender: user?.gender || ""
+  });
 
-  const initial = user.email.charAt(0).toUpperCase();
+  const saveProfile = async () => {
+    const res = await api.put("/users/profile", form);
+    setUser(res.data);
+    setEditing(false);
+  };
 
   return (
-    <div className="profile-page">
-      <aside className="profile-sidebar">
-        <div className="profile-user">
-          <div className="profile-avatar">{initial}</div>
-          <div>
-            <p className="hello">Hello</p>
-            <h4>{user.name || user.email}</h4>
-          </div>
-        </div>
+    <div className="account-page">
+      <aside className="account-sidebar">
+        <h3>Account Overview</h3>
 
-        <ul className="profile-menu">
-          <li className="active">My Account</li>
-          <li>My Orders</li>
-          <li>Returns & Cancel</li>
-          <li>My Ratings & Reviews</li>
-          <li>My Wishlist</li>
-          <li>Payment</li>
-          <li>Change Password</li>
+        <ul>
+          <li
+            className={active === "personal" ? "active" : ""}
+            onClick={() => setActive("personal")}
+          >
+            Personal Information
+          </li>
+          <li>Address Book</li>
+          <li>Orders</li>
+          <li>Wishlist</li>
+          <li onClick={logout}>Logout</li>
         </ul>
       </aside>
 
-      <section className="profile-content">
-        <div className="profile-header">
-          <h2>Personal Information</h2>
-        </div>
+      <section className="account-content">
+        {active === "personal" && (
+          <>
+            <div className="card">
+              <div className="card-header">
+                <h3>Personal Information</h3>
+                {!editing && (
+                  <span className="edit" onClick={() => setEditing(true)}>
+                    Edit
+                  </span>
+                )}
+              </div>
 
-        <div className="profile-card">
-          <div className="profile-photo">
-            <div className="big-avatar">{initial}</div>
-          </div>
+              <div className="info-row">
+                <label>Name</label>
+                <input
+                  disabled={!editing}
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                />
+              </div>
 
-          <div className="profile-fields">
-            <label>Name</label>
-            <input value={user.name || ""} disabled />
+              <div className="info-row">
+                <label>Phone Number</label>
+                <input
+                  disabled={!editing}
+                  value={form.phone}
+                  onChange={e => setForm({ ...form, phone: e.target.value })}
+                />
+              </div>
 
-            <label>Date of Birth</label>
-            <input value="—" disabled />
+              <div className="info-row">
+                <label>Date of Birth</label>
+                <input
+                  type="date"
+                  disabled={!editing}
+                  value={form.dob}
+                  onChange={e => setForm({ ...form, dob: e.target.value })}
+                />
+              </div>
 
-            <label>Gender</label>
-            <div className="gender">
-              <span className="radio active">Male</span>
-              <span className="radio">Female</span>
+              <div className="info-row">
+                <label>Gender</label>
+                <select
+                  disabled={!editing}
+                  value={form.gender}
+                  onChange={e => setForm({ ...form, gender: e.target.value })}
+                >
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+
+              {editing && (
+                <button className="primary-btn" onClick={saveProfile}>
+                  Save Changes
+                </button>
+              )}
             </div>
 
-            <label>Phone Number</label>
-            <input value="—" disabled />
+            <div className="card">
+              <h3>Login Details</h3>
 
-            <label>Email</label>
-            <input value={user.email} disabled />
-          </div>
-        </div>
+              <div className="info-row">
+                <label>Email</label>
+                <p>{user.email}</p>
+              </div>
+
+              <div className="info-row">
+                <label>Password</label>
+                <p>************</p>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3>Log out from all web browsers</h3>
+              <p>
+                This will log you out from all browsers you have used to access
+                your account.
+              </p>
+              <button className="outline-btn" onClick={logout}>
+                Log me out
+              </button>
+            </div>
+
+            <div className="card danger">
+              <h3>Manage Account</h3>
+              <button className="danger-btn">
+                Delete Account
+              </button>
+            </div>
+          </>
+        )}
       </section>
     </div>
   );
