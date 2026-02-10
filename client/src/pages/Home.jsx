@@ -4,6 +4,9 @@ import Hero from "../components/Hero"
 import HomeProducts from "../components/HomeProducts"
 import Categories from "../components/Categories"
 import About from "../components/About"
+import Features from "../components/Features"
+import Reviews from "../components/Reviews"
+import Newsletter from "../components/Newsletter"
 
 export default function Home() {
   const aboutRef = useRef(null)
@@ -32,6 +35,9 @@ export default function Home() {
       <Hero />
       <HomeProducts />
       <Categories />
+      <Features />
+      <Reviews />
+      <Newsletter />
       <About ref={aboutRef} />
     </>
   )

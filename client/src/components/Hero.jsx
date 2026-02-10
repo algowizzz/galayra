@@ -1,28 +1,70 @@
 import { Link } from "react-router-dom"
-import "../styles/main.css"
-import heroImg from "../assets/one.png"
+import "../styles/style.css"
 
 export default function Hero() {
   return (
-    <section className="hero">
-      <div className="hero-left">
-        <h1>
-          The Gift of <br /> Good Style
-        </h1>
+    <section className="cc-hero">
+      <div className="cc-dots-bg"></div>
+      <div className="cc-yellow-blob"></div>
+      <div className="cc-hero-inner">
+        <div className="cc-hero-left">
+          <span className="cc-pill">
+            ✨ New Collection 2024
+          </span>
 
-        <p>
-          I'm a paragraph. Click here to add your own text and edit me.
-          It’s easy. Just click “Edit Text” or double click me to add
-          your own content and make changes to the font.
-        </p>
+          <h1>
+            <span className="cc-gradient">Protect</span><br />
+            <span className="cc-dark">Your Vibe</span>
+          </h1>
 
-        <Link to="/products" className="hero-btn">
-          Shop Now
-        </Link>
-      </div>
+          <p>
+            Premium phone cases that match your energy.
+            Bold designs, unbeatable protection, and seriously good vibes only.
+          </p>
 
-      <div className="hero-right">
-        <img src={heroImg} alt="Hero" />
+          <div className="cc-hero-actions">
+            <Link to="/products" className="cc-btn-primary">
+              Shop Collection →
+            </Link>
+
+            <button className="cc-btn-secondary">
+              See Designs
+            </button>
+          </div>
+
+          <div className="cc-trust">
+            <div>
+              <strong>50K+</strong>
+              <span>Happy Customers</span>
+            </div>
+            <div>
+              <strong>4.9★</strong>
+              <span>Rating</span>
+            </div>
+            <div>
+              <strong>🌿</strong>
+              <span>Eco-Friendly</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="cc-hero-right">
+          <div className="cc-phone phone-1">
+            <span>🌸</span>
+            <p>Blossom</p>
+          </div>
+
+          <div className="cc-phone phone-2">
+            <span>🌊</span>
+            <p>Wave</p>
+          </div>
+
+          <div className="cc-phone phone-3">
+            <span>⭐</span>
+            <p>Star</p>
+          </div>
+        </div>
+
       </div>
     </section>
   )

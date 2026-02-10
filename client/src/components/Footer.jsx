@@ -1,73 +1,64 @@
 import { forwardRef } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { FaFacebookF, FaInstagram, FaPinterestP } from "react-icons/fa"
-import "../styles/main.css"
+import { FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa"
+import "../styles/style.css"
 
 export default forwardRef(function Footer(_, ref) {
   const navigate = useNavigate()
 
-  const goToAbout = () => {
-    navigate("/", { state: { scrollTo: "about" } })
-  }
-
-  const goToContact = () => {
-    navigate("/", { state: { scrollTo: "footer" } })
-  }
-
   return (
-    <footer id="footer" className="footer">
+    <footer className="site-footer" ref={ref}>
       <div className="footer-top">
-        <div className="footer-col">
-          <h4>Shop</h4>
-          <p><Link to="/products">Shop</Link></p>
-          <p><button className="footer-link" onClick={goToAbout}>About</button></p>
-          <p><button className="footer-link" onClick={goToContact}>Contact</button></p>
-        </div>
-
-        <div className="footer-col">
-          <h4>Helpful Links</h4>
-          <p>FAQ</p>
-          <p>Terms & Conditions</p>
-          <p>Privacy Policy</p>
-          <p>Shipping Policy</p>
-          <p>Refund Policy</p>
-          <p>Cookie Policy</p>
-        </div>
-
-        <div className="footer-col">
-          <h4>Contact</h4>
-          <p>+91 9647824567</p>
-          <p>galayra.business@gmail.com</p>
-
-          <div className="socials">
-            <FaInstagram onClick={"https://www.instagram.com/galayra.in/"}/>
-            <FaFacebookF />
-            <FaPinterestP />
-          </div>
-        </div>
-
-        <div className="footer-col footer-subscribe">
-          <h4>Subscribe</h4>
-          <p className="subscribe-text">
-            Subscribe to our newsletter and be among the first to hear about
-            new arrivals, events and special offers.
+        <div className="footer-brand-col">
+          <h3>GALAYRA</h3>
+          <p>
+            Premium phone cases for every vibe. Express yourself, protect your phone.
           </p>
 
-          <label>Email *</label>
-          <input type="email" />
-
-          <div className="checkbox-row">
-            <input type="checkbox" />
-            <span>Yes, subscribe me to your newsletter.</span>
+          <div className="footer-socials">
+            <FaTwitter />
+            <FaInstagram />
+            <FaYoutube />
           </div>
+        </div>
 
-          <button className="subscribe-btn">Subscribe</button>
+        <div className="footer-col">
+          <h4>Shop</h4>
+          <Link to="/products">All Cases</Link>
+          <Link to="/products">iPhone Cases</Link>
+          <Link to="/products">Samsung Cases</Link>
+          <Link to="/products">Custom Cases</Link>
+        </div>
 
-          <p className="copyright">© 2035 by GALAYRA</p>
+        <div className="footer-col">
+          <h4>Support</h4>
+          <span>FAQ</span>
+          <span>Shipping</span>
+          <span>Returns</span>
+          <span onClick={() => navigate("/", { state: { scrollTo: "footer" } })}>
+            Contact Us
+          </span>
+        </div>
+
+        <div className="footer-col">
+          <h4>Company</h4>
+          <span>About Us</span>
+          <span>Sustainability</span>
+          <span>Careers</span>
+          <span>Press</span>
+        </div>
+
+      </div>
+
+      <div className="footer-divider" />
+      <div className="footer-bottom">
+        <p>© 2024 Case Collective. All rights reserved.</p>
+        <div className="footer-legal">
+          <span>Privacy Policy</span>
+          <span>Terms of Service</span>
         </div>
       </div>
 
-      <div className="footer-brand">GALAYRA</div>
     </footer>
   )
 })

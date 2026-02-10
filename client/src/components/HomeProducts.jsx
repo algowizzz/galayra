@@ -1,77 +1,71 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import "../styles/main.css"
+import "../styles/style.css"
 
 export default function HomeProducts() {
   const [products, setProducts] = useState([])
-  const scrollRef = useRef(null)
 
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
       .then(res => res.json())
-      .then(data => setProducts(data.slice(0, 8)))
+      .then(data => setProducts(data.slice(0, 4))) 
       .catch(err => console.error(err))
   }, [])
 
-  const scrollLeft = () => {
-    scrollRef.current.scrollBy({
-      left: -300,
-      behavior: "smooth",
-    })
-  }
-
-  const scrollRight = () => {
-    scrollRef.current.scrollBy({
-      left: 300,
-      behavior: "smooth",
-    })
-  }
-
   return (
-    <section className="home-products">
-      <h2 className="section-title">New In Store</h2>
+    <section className="bestsellers">
+      <div className="bestsellers-header">
+        <div>
+          <h2>Bestsellers</h2>
+          <p>Our most-loved designs 💚</p>
+        </div>
 
-      <button className="scroll-btn left" onClick={scrollLeft}>
-        ‹
-      </button>
+        <div className="filter-tabs">
+          <button className="active">All</button>
+          <button>iPhone</button>
+          <button>Samsung</button>
+        </div>
+      </div>
 
-      <button className="scroll-btn right" onClick={scrollRight}>
-        ›
-      </button>
-
-      <div className="products-scroll" ref={scrollRef}>
+      <div className="bestsellers-grid">
         {products.map(product => {
-          const price = product.variants?.[0]?.price;
-          const compareAt = product.compare_at_price;
+          const price = product.variants?.[0]?.price
+          const compareAt = product.compare_at_price
 
           return (
-            <Link
-              key={product._id}
-              to={`/product/${product._id}`}
-              className="product-card"
-            >
-              <div className="card-image-wrapper">
-                {compareAt && <span className="sale-badge">-10%</span>}
+            <div key={product._id} className="bestseller-card">
+              <div className="card-image">
+                {compareAt && <span className="badge sale">-20%</span>}
+                {!compareAt && <span className="badge new">NEW</span>}
 
-                <img
-                  src={product.image_url}
-                  alt={product.title}
-                  className="product-image"
-                />
+                <img src={product.image_url} alt={product.title} />
               </div>
 
-              <p className="product-title">{product.title}</p>
+              <h3>{product.title}</h3>
+              <p className="device">{product.device || "Phone Case"}</p>
 
-              <div className="product-price">
+              <div className="price-row">
                 {compareAt && (
                   <span className="old-price">${compareAt}</span>
                 )}
-                <span className="new-price">${price}</span>
+                <span className="price">${price}</span>
+
+                <Link
+                  to={`/product/${product._id}`}
+                  className="add-btn"
+                >
+                  Add to Cart
+                </Link>
               </div>
-            </Link>
+            </div>
           )
         })}
       </div>
+
+      <div className="view-all">
+        <Link to="/products">View All Products →</Link>
+      </div>
+
     </section>
   )
 }

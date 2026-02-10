@@ -1,7 +1,7 @@
 import { FaSearch, FaShoppingBag } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
-import "../styles/main.css"
+import "../styles/style.css"
 import { useCart } from "../context/CartContext"
 import { useAuth } from "../context/AuthContext"
 import SearchOverlay from "./SearchOverlay"
@@ -16,6 +16,9 @@ export default function Navbar() {
   const [products, setProducts] = useState([])
 
   const accountRef = useRef(null)
+  const goToShop = () => navigate("/products")
+  const goToAbout = () => navigate("/", { state: { scrollTo: "features" } })
+  const goToContact = () => navigate("/", { state: { scrollTo: "reviews" } })
 
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
@@ -29,93 +32,66 @@ export default function Navbar() {
         setAccountOpen(false)
       }
     }
-
     document.addEventListener("click", handleClickOutside)
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
-  const goToShop = () => navigate("/products")
-  const goToAbout = () => navigate("/", { state: { scrollTo: "about" } })
-  const goToContact = () => navigate("/", { state: { scrollTo: "footer" } })
-
   return (
     <>
-      <div className="top-strip">
-        Free shipping on orders over $75. <span>Subscribe</span>
-      </div>
-
-      <nav className="navbar">
-        <div className="nav-left">
-          <FaSearch
-            className="nav-icon"
-            onClick={() => setSearchOpen(true)}
-          />
-        </div>
-
-        <div className="nav-center">
-          <h1 className="logo" onClick={() => navigate("/")}>GALAYRA</h1>
-          <div className="nav-links">
-            <button onClick={goToShop} className="nav-btn">Shop</button>
-            <button onClick={goToAbout} className="nav-btn">About</button>
-            <button onClick={goToContact} className="nav-btn">Contact</button>
+      <nav className="cc-navbar">
+        <div className="cc-navbar-inner">
+          <div className="cc-nav-left">
+            <h1 className="cc-brand" onClick={() => navigate("/")}>
+              GALAYRA
+            </h1>
           </div>
-        </div>
 
-        <div className="nav-right">
-          {user ? (
-            <div className="account-wrapper" ref={accountRef}>
-              <div
-                className="account-trigger"
-                onClick={() => setAccountOpen(prev => !prev)}
-              >
+          <div className="cc-nav-center">
+            <span onClick={goToShop}>Shop</span>
+            <span onClick={goToAbout}>Features</span>
+            <span onClick={goToContact}>Reviews</span>
+          </div>
+
+          <div className="cc-nav-right">
+            <FaSearch
+              className="cc-nav-icon"
+              onClick={() => setSearchOpen(true)}
+            />
+
+            <div className="cc-cart" onClick={() => setIsCartOpen(true)}>
+              <FaShoppingBag />
+              <span className="cc-cart-badge">{cartCount}</span>
+            </div>
+
+            {user ? (
+              <div className="cc-account" ref={accountRef}>
                 <img
                   src={user.avatar || "/default-avatar.png"}
                   alt="profile"
-                  className="nav-avatar"
+                  onClick={() => setAccountOpen(p => !p)}
                 />
-                <span className="account-name">{user.name}</span>
+
+                {accountOpen && (
+                  <div className="cc-account-dropdown">
+                    <div onClick={() => navigate("/profile")}>My Profile</div>
+                    <div>Orders</div>
+                    <div>Wishlist</div>
+                    <div className="divider" />
+                    <div
+                      className="logout"
+                      onClick={() => {
+                        logout()
+                        navigate("/")
+                      }}
+                    >
+                      Logout
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {accountOpen && (
-                <div className="account-dropdown">
-                  <div
-                    className="dropdown-item"
-                    onClick={() => {
-                      navigate("/profile")
-                      setAccountOpen(false)
-                    }}
-                  >
-                    My Profile
-                  </div>
-
-                  <div className="dropdown-item">Orders</div>
-                  <div className="dropdown-item">Wishlist</div>
-                  <div className="dropdown-item">Notifications</div>
-
-                  <div className="dropdown-divider" />
-
-                  <div
-                    className="dropdown-item logout"
-                    onClick={() => {
-                      logout()
-                      setAccountOpen(false)
-                      navigate("/")
-                    }}
-                  >
-                    Logout
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="nav-account">
-              <Link to="/login">Log In</Link>
-            </div>
-          )}
-
-          <div className="nav-cart" onClick={() => setIsCartOpen(true)}>
-            <FaShoppingBag />
-            <span>Cart ({cartCount})</span>
+            ) : (
+              <Link to="/login" className="cc-login">Log In</Link>
+            )}
           </div>
         </div>
       </nav>
