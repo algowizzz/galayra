@@ -1,53 +1,49 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import api from "../api/axios"
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "../api/axios";
 
-const CartContext = createContext()
+const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([])
-  const [isCartOpen, setIsCartOpen] = useState(false)
+export function CartProvider({ children }) {
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const fetchCart = async () => {
     try {
-      const res = await api.get("/cart")
-      setCartItems(res.data.items || [])
+      const res = await api.get("/cart");
+      setCartItems(res.data.items || []);
     } catch {
-      setCartItems([])
+      setCartItems([]);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchCart()
-  }, [])
+    fetchCart();
+  }, []);
 
-  const addToCart = async (product, quantity = 1) => {
-    await api.post("/cart", {
-      ...product,
-      quantity
-    })
-    fetchCart()
-  }
+  const addToCart = async (payload, quantity = 1) => {
+    await api.post("/cart", { ...payload, quantity });
+    fetchCart();
+  };
 
-  const updateQty = async (cartItemId, quantity) => {
-    await api.put(`/cart/${cartItemId}`, { quantity })
-    fetchCart()
-  }
+  const updateQty = async (id, quantity) => {
+    await api.put(`/cart/${id}`, { quantity });
+    fetchCart();
+  };
 
-  const removeFromCart = async (cartItemId) => {
-    await api.delete(`/cart/${cartItemId}`)
-    fetchCart()
-  }
+  const removeFromCart = async id => {
+    await api.delete(`/cart/${id}`);
+    fetchCart();
+  };
 
-  const cartCount = cartItems.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  )
+  const cartCount = cartItems.reduce((s, i) => s + i.quantity, 0);
+  const cartTotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
         cartCount,
+        cartTotal,
         addToCart,
         updateQty,
         removeFromCart,
@@ -57,7 +53,7 @@ export const CartProvider = ({ children }) => {
     >
       {children}
     </CartContext.Provider>
-  )
+  );
 }
 
-export const useCart = () => useContext(CartContext)
+export const useCart = () => useContext(CartContext);
