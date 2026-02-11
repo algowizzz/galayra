@@ -1,59 +1,117 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/axios";
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import * as cartService from '../services/cartService';
+import { AuthContext } from './AuthContext';
 
-const CartContext = createContext();
+export const CartContext = createContext()
 
-export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState({ items: [] })
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState({ show: false, message: '' })
+  
+  const { user, isAuthenticated } = useContext(AuthContext)
+  useEffect(() => {
+    fetchCart();
+  }, [user])
 
   const fetchCart = async () => {
     try {
-      const res = await api.get("/cart");
-      setCartItems(res.data.items || []);
-    } catch {
-      setCartItems([]);
+      setLoading(true)
+      const cartData = await cartService.getCart()
+      setCart(cartData);
+    } catch (err) {
+      console.error('Failed to fetch cart:', err)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
+  const addToCart = async (product, variantId, quantity = 1) => {
+    try {
+      setLoading(true)
+      const updatedCart = await cartService.addToCart({
+        product_id: product._id || product.id,
+        variant_id: variantId,
+        title: product.title || product.name,
+        price: product.price,
+        image_url: product.image_url || product.emoji,
+        quantity
+      })
+      setCart(updatedCart)
+      showToast(`${product.title || product.name} added to cart!`)
+      return { success: true }
+    } catch (err) {
+      console.error('Failed to add to cart:', err)
+      showToast('Failed to add item to cart', 'error')
+      return { success: false };
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const addToCart = async (payload, quantity = 1) => {
-    await api.post("/cart", { ...payload, quantity });
-    fetchCart();
-  };
+  const updateQuantity = async (itemId, quantity) => {
+    try {
+      if (quantity < 1) {
+        await removeFromCart(itemId)
+        return
+      }
+      
+      setLoading(true)
+      const updatedCart = await cartService.updateCartItem(itemId, { quantity })
+      setCart(updatedCart)
+      return { success: true }
+    } catch (err) {
+      console.error('Failed to update cart:', err)
+      return { success: false }
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const updateQty = async (id, quantity) => {
-    await api.put(`/cart/${id}`, { quantity });
-    fetchCart();
-  };
+  const removeFromCart = async (itemId) => {
+    try {
+      setLoading(true)
+      const updatedCart = await cartService.removeFromCart(itemId)
+      setCart(updatedCart)
+      showToast('Item removed from cart')
+      return { success: true }
+    } catch (err) {
+      console.error('Failed to remove from cart:', err)
+      return { success: false }
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const removeFromCart = async id => {
-    await api.delete(`/cart/${id}`);
-    fetchCart();
-  };
+  const clearCart = () => {
+    setCart({ items: [] })
+  }
 
-  const cartCount = cartItems.reduce((s, i) => s + i.quantity, 0);
-  const cartTotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type })
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000)
+  }
 
-  return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        cartCount,
-        cartTotal,
-        addToCart,
-        updateQty,
-        removeFromCart,
-        isCartOpen,
-        setIsCartOpen
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
+  const cartTotal = cart.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0
+  const cartCount = cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+
+  const value = {
+    cart: cart.items || [],
+    cartData: cart,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    cartTotal,
+    cartCount,
+    isCartOpen,
+    setIsCartOpen,
+    loading,
+    toast,
+    showToast,
+    fetchCart
+  }
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
-
-export const useCart = () => useContext(CartContext);
