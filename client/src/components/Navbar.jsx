@@ -1,7 +1,7 @@
 import { FaSearch, FaShoppingBag } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
-import "../styles/newstyles.css"
+import "../styles/style.css"
 import { useCart } from "../context/CartContext"
 import { useAuth } from "../context/AuthContext"
 import SearchOverlay from "./SearchOverlay"
@@ -16,9 +16,6 @@ export default function Navbar() {
   const [products, setProducts] = useState([])
 
   const accountRef = useRef(null)
-  const goToShop = () => navigate("/products")
-  const goToAbout = () => navigate("/", { state: { scrollTo: "features" } })
-  const goToContact = () => navigate("/", { state: { scrollTo: "reviews" } })
 
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
@@ -38,50 +35,52 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Top Strip */}
+      <div className="cc-top-strip">
+        Free shipping on orders over $75. <span>Subscribe</span>
+      </div>
+
+      {/* Navbar */}
       <nav className="cc-navbar">
         <div className="cc-navbar-inner">
 
-          {/* LEFT */}
+          {/* Left */}
           <div className="cc-nav-left">
-            <h1 className="cc-brand" onClick={() => navigate("/")}>
-              GALAYRA
-            </h1>
-          </div>
-
-          {/* CENTER */}
-          <div className="cc-nav-center">
-            <button onClick={goToShop}>Shop</button>
-            <button onClick={goToAbout}>Features</button>
-            <button onClick={goToContact}>Reviews</button>
-          </div>
-
-          {/* RIGHT */}
-          <div className="cc-nav-right">
-
             <button
-              className="cc-nav-icon"
+              className="cc-icon-btn"
               onClick={() => setSearchOpen(true)}
             >
               <FaSearch />
             </button>
+          </div>
 
-            <button
-              className="cc-cart"
-              onClick={() => setIsCartOpen(true)}
-            >
-              <FaShoppingBag />
-              {cartCount > 0 && (
-                <span className="cc-cart-badge">{cartCount}</span>
-              )}
-            </button>
+          {/* Center */}
+          <div className="cc-nav-center">
+            <h1 className="cc-logo" onClick={() => navigate("/")}>
+              Case Collective
+            </h1>
 
+            <div className="cc-nav-links">
+              <button onClick={() => navigate("/products")}>Shop</button>
+              <button onClick={() => navigate("/")}>Features</button>
+              <button onClick={() => navigate("/")}>Reviews</button>
+            </div>
+          </div>
+
+          {/* Right */}
+          <div className="cc-nav-right">
             {user ? (
               <div className="cc-account" ref={accountRef}>
-                <img
-                  src={user.avatar || "/default-avatar.png"}
-                  alt="profile"
+                <button
+                  className="cc-account-trigger"
                   onClick={() => setAccountOpen(p => !p)}
-                />
+                >
+                  <img
+                    src={user.avatar || "/default-avatar.png"}
+                    alt="profile"
+                  />
+                  <span>{user.name}</span>
+                </button>
 
                 {accountOpen && (
                   <div className="cc-account-dropdown">
@@ -102,9 +101,22 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="cc-login">Sign In</Link>
+              <Link to="/login" className="cc-login">
+                Log In
+              </Link>
             )}
+
+            <button
+              className="cc-cart-btn"
+              onClick={() => setIsCartOpen(true)}
+            >
+              <FaShoppingBag />
+              {cartCount > 0 && (
+                <span className="cc-cart-badge">{cartCount}</span>
+              )}
+            </button>
           </div>
+
         </div>
       </nav>
 
