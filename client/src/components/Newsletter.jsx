@@ -1,4 +1,4 @@
-import "../styles/style.css"
+import "../styles/main.css"
 
 export default function Newsletter() {
   const handleSubmit = e => {

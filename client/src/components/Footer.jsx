@@ -1,7 +1,7 @@
 import { forwardRef } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa"
-import "../styles/style.css"
+import "../styles/main.css"
 
 export default forwardRef(function Footer(_, ref) {
   const navigate = useNavigate()

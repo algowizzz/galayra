@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useSearchParams, useNavigate } from "react-router-dom"
-import "../styles/style.css"
+import "../styles/main.css"
 
 export default function Products() {
   const [products, setProducts] = useState([])

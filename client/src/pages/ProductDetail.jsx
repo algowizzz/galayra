@@ -1,61 +1,107 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import api from "../api/axios";
-import { useCart } from "../context/CartContext";
-import "../styles/galayra.css";
+import { useParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useCart } from "../context/CartContext"
+import "../styles/main.css"
 
 export default function ProductDetail() {
-  const { id } = useParams();
-  const { addToCart } = useCart();
+  const { id } = useParams()
+  const { addToCart } = useCart()
 
-  const [product, setProduct] = useState(null);
-  const [variant, setVariant] = useState(null);
-  const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState(null)
+  const [quantity, setQuantity] = useState(1)
+  const [selectedVariant, setSelectedVariant] = useState(null)
+  const [selectedImage, setSelectedImage] = useState("")
 
   useEffect(() => {
-    api.get(`/products/${id}`).then(res => {
-      setProduct(res.data);
-      setVariant(res.data.variants[0]);
-    });
-  }, [id]);
+    fetch(`http://localhost:3000/api/products/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setProduct(data)
+        setSelectedVariant(data.variants?.[0])
+        setSelectedImage(data.image_url)
+      })
+  }, [id])
 
-  if (!product || !variant) return null;
+  if (!product || !selectedVariant) {
+    return <div className="loading">Loading…</div>;
+  }
 
-  const handleAdd = () => {
-    addToCart({
-      product_id: product._id,
-      variant_id: variant.printify_variant_id,
-      title: product.title,
-      price: variant.price,
-      image_url: product.image_url
-    }, quantity);
-  };
+  const handleAddToCart = () => {
+    addToCart(
+      {
+        product_id: product._id,
+        variant_id: selectedVariant.printify_variant_id,
+        title: product.title,
+        price: selectedVariant.price,
+        image_url: product.image_url
+      },
+      quantity
+    )
+  }
 
   return (
-    <section style={{ padding: "140px 60px" }}>
-      <h1>{product.title}</h1>
-      <p>${variant.price}</p>
+    <section className="product-page">
+      <div className="product-layout">
+        <div className="product-thumbnails">
+          {[product.image_url].map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              className={`thumb ${selectedImage === img ? "active" : ""}`}
+              onClick={() => setSelectedImage(img)}
+              alt=""
+            />
+          ))}
+        </div>
 
-      <select
-        value={variant.printify_variant_id}
-        onChange={e =>
-          setVariant(
-            product.variants.find(
-              v => v.printify_variant_id === Number(e.target.value)
-            )
-          )
-        }
-      >
-        {product.variants.map(v => (
-          <option key={v.printify_variant_id} value={v.printify_variant_id}>
-            {v.title}
-          </option>
-        ))}
-      </select>
+        <div className="product-main-image">
+          <img src={selectedImage} alt={product.title} />
+        </div>
 
-      <button className="cta-btn" onClick={handleAdd}>
-        Add to Cart
-      </button>
+        <div className="product-info">
+          <h1>{product.title}</h1>
+          <p className="price">${selectedVariant.price}</p>
+
+          <div
+            className="description"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          />
+
+          <div className="option-group">
+            <label>Phone model</label>
+            <select
+              value={selectedVariant.printify_variant_id}
+              onChange={e =>
+                setSelectedVariant(
+                  product.variants.find(
+                    v => v.printify_variant_id === Number(e.target.value)
+                  )
+                )
+              }
+            >
+              {product.variants.map(v => (
+                <option key={v.printify_variant_id} value={v.printify_variant_id}>
+                  {v.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="option-group">
+            <label>Quantity</label>
+            <div className="quantity-box">
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
+              <span>{quantity}</span>
+              <button onClick={() => setQuantity(q => q + 1)}>+</button>
+            </div>
+          </div>
+
+          <button className="add-to-cart" onClick={handleAddToCart}>
+            Add to Cart
+          </button>
+        </div>
+
+      </div>
     </section>
-  );
+  )
 }
