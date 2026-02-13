@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
+import Login from "./pages/Login";
+// import Signup from "./pages/Signup";
+// import Profile from "./pages/Profile";
+// import Checkout from "./pages/Checkout";
+// import Reviews from "./pages/Reviews";
+import About from "./pages/About";
+// import Success from "./pages/Success";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [path, setPath] = useState(window.location.hash.slice(1) || "/")
+
+  useEffect(() => {
+    const handler = () => setPath(window.location.hash.slice(1) || "/")
+    window.addEventListener("hashchange", handler)
+    return () => window.removeEventListener("hashchange", handler)
+  }, [])
+
+  const navigate = (p) => (window.location.hash = p)
+
+  let Page = <Home navigate={navigate} />
+  if (path === "/products") Page = <Products navigate={navigate} />
+  else if (path.startsWith("/product/"))
+    Page = <ProductDetail navigate={navigate} id={path.split("/")[2]} />
+  else if (path === "/login") Page = <Login navigate={navigate} />
+  else if (path === "/signup") Page = <Signup navigate={navigate} />
+  else if (path === "/profile") Page = <Profile navigate={navigate} />
+  else if (path === "/checkout") Page = <Checkout navigate={navigate} />
+  else if (path === "/reviews") Page = <Reviews navigate={navigate} />
+  else if (path === "/about") Page = <About navigate={navigate} />
+  else if (path === "/success") Page = <Success navigate={navigate} />
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Navbar navigate={navigate} />
+      {Page}
+      <Footer />
     </>
-  )
+  );
 }
-
-export default App
