@@ -5,38 +5,36 @@ const User = require("../models/User");
 passport.use(
   new GoogleStrategy(
     {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/auth/google/callback",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/google/callback",
     },
     async (_, __, profile, done) => {
-        try {
-        let user = await User.findOne({ googleId: profile.id });
+      try {
+        const email = profile.emails[0].value;
+
+        let user = await User.findOne({
+          $or: [{ googleId: profile.id }, { email }]
+        });
 
         if (!user) {
-            user = await User.create({
-            googleId: profile.id,
+          user = await User.create({
             name: profile.displayName,
-            email: profile.emails[0].value,
+            email,
+            googleId: profile.id,
             avatar: profile.photos?.[0]?.value
-            });
+          });
+        } else if (!user.googleId) {
+          user.googleId = profile.id;
+          await user.save();
         }
 
         done(null, user);
-        } catch (err) {
+      } catch (err) {
         done(err);
-        }
+      }
     }
   )
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id);
-  done(null, user);
-});
 
 module.exports = passport;

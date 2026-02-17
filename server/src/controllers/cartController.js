@@ -1,81 +1,47 @@
-const Cart = require("../models/Cart")
-
-const getUserId = req => req.user?.id || "guest"
-
-exports.addToCart = async (req, res) => {
-  const userId = getUserId(req)
-
-  const {
-    product_id,
-    variant_id,
-    title,
-    price,
-    image_url,
-    quantity = 1
-  } = req.body
-
-  let cart = await Cart.findOne({ user_id: userId })
-
-  if (!cart) {
-    cart = await Cart.create({
-      user_id: userId,
-      items: []
-    })
-  }
-
-  const existing = cart.items.find(
-    i => i.variant_id === String(variant_id)
-  )
-
-  if (existing) {
-    existing.quantity += quantity
-  } else {
-    cart.items.push({
-      product_id,
-      variant_id: String(variant_id),
-      title,
-      price,
-      image_url,
-      quantity
-    })
-  }
-
-  await cart.save()
-  res.json(cart)
-}
+const Cart = require("../models/Cart");
 
 exports.getMyCart = async (req, res) => {
-  const userId = getUserId(req)
+  let cart = await Cart.findOne({ user: req.userId });
 
-  const cart = await Cart.findOne({ user_id: userId })
-  res.json(cart || { items: [] })
-}
+  if (!cart) cart = await Cart.create({ user: req.userId, items: [] });
 
-exports.updateCartItem = async (req, res) => {
-  const userId = getUserId(req)
+  res.json(cart);
+};
 
-  const cart = await Cart.findOne({ user_id: userId })
-  if (!cart) return res.json({ items: [] })
+exports.addToCart = async (req, res) => {
+  const { product_id, variant_id, title, price, image_url, quantity = 1 } = req.body;
 
-  const item = cart.items.id(req.params.id)
-  if (!item) return res.status(404).json({ message: "Item not found" })
+  let cart = await Cart.findOne({ user: req.userId });
+  if (!cart) cart = await Cart.create({ user: req.userId, items: [] });
 
-  item.quantity = req.body.quantity
-  await cart.save()
+  const existing = cart.items.find(i => i.variant_id === String(variant_id));
 
-  res.json(cart)
-}
+  if (existing) existing.quantity += quantity;
+  else cart.items.push({ product_id, variant_id, title, price, image_url, quantity });
 
-exports.removeFromCart = async (req, res) => {
-  const userId = getUserId(req)
+  await cart.save();
+  res.json(cart);
+};
 
-  const cart = await Cart.findOne({ user_id: userId })
-  if (!cart) return res.json({ items: [] })
+exports.updateQuantity = async (req, res) => {
+  const cart = await Cart.findOne({ user: req.userId });
+  if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-  cart.items = cart.items.filter(
-    item => item._id.toString() !== req.params.id
-  )
+  const item = cart.items.id(req.params.itemId);
+  if (!item) return res.status(404).json({ message: "Item not found" });
 
-  await cart.save()
-  res.json(cart)
-}
+  item.quantity = req.body.quantity;
+  await cart.save();
+
+  res.json(cart);
+};
+
+exports.removeItem = async (req, res) => {
+  const cart = await Cart.findOne({ user: req.userId });
+  if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+  cart.items = cart.items.filter(i => i._id.toString() !== req.params.itemId);
+  await cart.save();
+
+  res.json(cart);
+};
