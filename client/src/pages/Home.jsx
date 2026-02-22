@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import Bestsellers from "../components/BestSeller";
 
-export default function Home({ navigate }) {
+export default function Home() {
+  const navigate = useNavigate();
+
   return (
     <>
       <section className="hero">
@@ -43,7 +46,7 @@ export default function Home({ navigate }) {
         </div>
       </section>
 
-      <Bestsellers navigate={navigate}/>
+      <Bestsellers />
 
       <section className="why-us">
         <div className="section-header">
