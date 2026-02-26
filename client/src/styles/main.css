@@ -2691,20 +2691,17 @@ h1, h2, h3, h4, h5 {
   flex: 0 0 auto;
 }
 
-/* Divider like profile */
 .profile-divider {
   border: none;
   border-top: 1px solid #e5e5e5;
   margin: 18px 0 24px;
 }
 
-/* Empty text */
 .empty-text {
   margin-bottom: 18px;
   color: #666;
 }
 
-/* Address list */
 .address-list {
   display: flex;
   flex-direction: column;
@@ -2712,7 +2709,6 @@ h1, h2, h3, h4, h5 {
   margin-bottom: 28px;
 }
 
-/* Card matches profile input softness */
 .address-card {
   border: 1px solid #e8e8e8;
   border-radius: 14px;
@@ -2723,7 +2719,6 @@ h1, h2, h3, h4, h5 {
   align-items: flex-start;
 }
 
-/* left side */
 .address-info {
   max-width: 70%;
 }
@@ -2742,7 +2737,6 @@ h1, h2, h3, h4, h5 {
   line-height: 1.5;
 }
 
-/* actions */
 .address-actions {
   display: flex;
   flex-direction: column;
@@ -2769,7 +2763,6 @@ h1, h2, h3, h4, h5 {
   border-radius: 6px;
 }
 
-/* Form grid like profile */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
