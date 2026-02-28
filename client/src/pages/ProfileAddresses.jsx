@@ -27,7 +27,6 @@ export default function ProfileAddresses() {
     const value = e.target.value
     setSearch(value)
     clearTimeout(timer)
-
     timer = setTimeout(async () => {
       if (value.length < 3) {
         setSuggestions([])
@@ -36,7 +35,7 @@ export default function ProfileAddresses() {
       const results = await searchAddress(value);
       setSuggestions(results)
     }, 400)
-  };
+  }
 
   const selectAddress = (place) => {
     const a = place.address || {}
@@ -96,7 +95,6 @@ export default function ProfileAddresses() {
           )}
         </div>
 
-        <hr className="profile-divider" />
         <div className="address-list">
           {addresses.length === 0 && (
             <p className="empty-text">No addresses saved</p>

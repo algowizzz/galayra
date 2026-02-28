@@ -27,22 +27,18 @@ export default function AddressProvider({ children }) {
   useEffect(() => {
     loadAddresses()
   }, [])
-
   const createAddress = async (data) => {
-    const res = await addAddress(data)
-    setAddresses(res.data)
+    await addAddress(data)
+    await loadAddresses()
   }
-
   const removeAddress = async (id) => {
-    const res = await deleteAddress(id)
-    setAddresses(res.data)
+    await deleteAddress(id)
+    await loadAddresses()
   }
-
   const makeDefault = async (id) => {
-    const res = await setDefaultAddress(id)
-    setAddresses(res.data)
+    await setDefaultAddress(id)
+    await loadAddresses()
   }
-
   return (
     <AddressContext.Provider
       value={{
@@ -51,7 +47,6 @@ export default function AddressProvider({ children }) {
         createAddress,
         removeAddress,
         makeDefault,
-        reload: loadAddresses,
       }}
     >
       {children}
