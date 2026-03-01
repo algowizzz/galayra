@@ -1,44 +1,37 @@
-import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
-import Login from "./pages/Login";
-// import Signup from "./pages/Signup";
-// import Profile from "./pages/Profile";
-// import Checkout from "./pages/Checkout";
-// import Reviews from "./pages/Reviews";
+import Login from "./pages/SignIn";
+import Signup from "./pages/Signup";
+import OAuthSuccess from "./pages/OAuthSuccess";
+import Profile from "./pages/Profile";
+import ProfileOrders from "./pages/ProfileOrders";
+import ProfileWishlist from "./pages/ProfileWishlist";
+import ProfileSettings from "./pages/ProfileSettings";
+import ProfileAddresses from "./pages/ProfileAddresses";
 import About from "./pages/About";
-// import Success from "./pages/Success";
+import { Routes, Route } from "react-router-dom";
 
 export default function App() {
-  const [path, setPath] = useState(window.location.hash.slice(1) || "/")
-
-  useEffect(() => {
-    const handler = () => setPath(window.location.hash.slice(1) || "/")
-    window.addEventListener("hashchange", handler)
-    return () => window.removeEventListener("hashchange", handler)
-  }, [])
-
-  const navigate = (p) => (window.location.hash = p)
-
-  let Page = <Home navigate={navigate} />
-  if (path === "/products") Page = <Products navigate={navigate} />
-  else if (path.startsWith("/product/"))
-    Page = <ProductDetail navigate={navigate} id={path.split("/")[2]} />
-  else if (path === "/login") Page = <Login navigate={navigate} />
-  else if (path === "/signup") Page = <Signup navigate={navigate} />
-  else if (path === "/profile") Page = <Profile navigate={navigate} />
-  else if (path === "/checkout") Page = <Checkout navigate={navigate} />
-  else if (path === "/reviews") Page = <Reviews navigate={navigate} />
-  else if (path === "/about") Page = <About navigate={navigate} />
-  else if (path === "/success") Page = <Success navigate={navigate} />
-
   return (
     <>
-      <Navbar navigate={navigate} />
-      {Page}
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path='/orders' element={<ProfileOrders />} />
+        <Route path='/wishlist' element={<ProfileWishlist />} />
+        <Route path='/settings' element={<ProfileSettings />} />
+        <Route path='/address' element={<ProfileAddresses />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
       <Footer />
     </>
   );
