@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { CartContext } from "../context/CartContext";
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
   const { user, logout, loading } = useAuth()
-  const { cartCount, setIsCartOpen } = useContext(CartContext)
+  const { cartCount, setIsCartOpen } = useCart()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [open, setOpen] = useState(false)
@@ -27,18 +27,23 @@ export default function Navbar() {
     document.addEventListener("mousedown", handler)
     return () => document.removeEventListener("mousedown", handler)
   }, [])
-
   if (loading) return null
+
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="logo" onClick={() => navigate("/")}>
         GALAYRA
       </div>
-
       <ul className="nav-links">
-        <li><Link className="nav-link" to="/products">Shop</Link></li>
-        <li><Link className="nav-link" to="/about">About</Link></li>
-        <li><Link className="nav-link" to="/reviews">Reviews</Link></li>
+        <li>
+          <Link className="nav-link" to="/products">Shop</Link>
+        </li>
+        <li>
+          <Link className="nav-link" to="/about">About</Link>
+        </li>
+        <li>
+          <Link className="nav-link" to="/reviews">Reviews</Link>
+        </li>
       </ul>
 
       <div className="nav-actions">
@@ -100,31 +105,32 @@ export default function Navbar() {
                   <div className="dropdown-email">{user.email}</div>
                 </div>
                 <div className="dropdown-divider" />
-                <button onClick={() => { navigate("/profile"); setOpen(false) }}>
+                <button onClick={() => { navigate("/profile"); setOpen(false); }}>
                   My Profile
                 </button>
-                <button onClick={() => { navigate("/address"); setOpen(false) }}>
+                <button onClick={() => { navigate("/address"); setOpen(false); }}>
                   Saved Address
                 </button>
-                <button onClick={() => { navigate("/orders"); setOpen(false) }}>
+                <button onClick={() => { navigate("/orders"); setOpen(false); }}>
                   Orders
                 </button>
-                <button onClick={() => { navigate("/wishlist"); setOpen(false) }}>
+                <button onClick={() => { navigate("/wishlist"); setOpen(false); }}>
                   Wishlist
                 </button>
-                <button onClick={() => { navigate("/settings"); setOpen(false) }}>
+                <button onClick={() => { navigate("/settings"); setOpen(false); }}>
                   Settings
                 </button>
                 <div className="dropdown-divider" />
                 <button
                   className="logout-btn"
                   onClick={() => {
-                    logout()
-                    navigate("/")
+                    logout();
+                    navigate("/");
                   }}
                 >
                   Logout
                 </button>
+
               </div>
             )}
           </div>
@@ -133,7 +139,6 @@ export default function Navbar() {
             Sign In
           </button>
         )}
-
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

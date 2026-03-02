@@ -1,18 +1,24 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/api";
+import { createContext, useContext, useEffect, useState } from "react"
+import api from "../api/api"
 
-const CartContext = createContext();
-export const useCart = () => useContext(CartContext);
-
+const CartContext = createContext()
+export const useCart = () => useContext(CartContext)
 export default function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   const loadCart = async () => {
-    const res = await api.get("/cart");
-    setCart(res.data.items || []);
-  };
+    try {
+      const res = await api.get("/cart")
+      setCart(res.data.items || [])
+    } catch (err) {
+      console.error("Cart load error:", err)
+    }
+  }
 
-  useEffect(() => { loadCart(); }, []);
+  useEffect(() => {
+    loadCart()
+  }, [])
 
   const addToCart = async (product) => {
     await api.post("/cart", {
@@ -22,23 +28,44 @@ export default function CartProvider({ children }) {
       price: product.price,
       image_url: product.image,
       quantity: 1
-    });
-    loadCart();
-  };
+    })
+    loadCart()
+  }
 
   const removeFromCart = async (id) => {
-    await api.delete(`/cart/${id}`);
-    loadCart();
-  };
+    await api.delete(`/cart/${id}`)
+    loadCart()
+  }
 
   const updateQty = async (id, quantity) => {
-    await api.put(`/cart/${id}`, { quantity });
-    loadCart();
-  };
+    if (quantity < 1) return
+    await api.put(`/cart/${id}`, { quantity })
+    loadCart()
+  }
+  const cartCount = cart.reduce(
+    (total, item) => total + (item.quantity || 0),
+    0
+  )
+  const cartTotal = cart.reduce(
+    (total, item) =>
+      total + (Number(item.price) || 0) * (item.quantity || 0),
+    0
+  )
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQty }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        cartCount,
+        cartTotal,
+        isCartOpen,
+        setIsCartOpen,
+        addToCart,
+        removeFromCart,
+        updateQty
+      }}
+    >
       {children}
     </CartContext.Provider>
-  );
+  )
 }
