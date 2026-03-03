@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { CartContext } from "../context/CartContext";
 
 export default function Navbar() {
   const { user, logout, loading } = useAuth()
+  const { cartCount, setIsCartOpen } = useContext(CartContext)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [open, setOpen] = useState(false)
@@ -22,12 +24,11 @@ export default function Navbar() {
         setOpen(false)
       }
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
   }, [])
 
   if (loading) return null
-
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="logo" onClick={() => navigate("/")}>
@@ -41,6 +42,36 @@ export default function Navbar() {
       </ul>
 
       <div className="nav-actions">
+        <button
+          className="cart-btn"
+          onClick={() => setIsCartOpen(true)}
+          style={{ position: "relative", fontSize: 22 }}
+        >
+          🛒
+          {cartCount > 0 && (
+            <span
+              className="cart-badge"
+              style={{
+                position: "absolute",
+                top: -6,
+                right: -8,
+                background: "#135237",
+                color: "white",
+                fontSize: 11,
+                fontWeight: 600,
+                width: 20,
+                height: 20,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              {cartCount}
+            </span>
+          )}
+        </button>
+
         {user ? (
           <div className="avatar-wrapper" ref={dropdownRef}>
             <div
@@ -69,19 +100,19 @@ export default function Navbar() {
                   <div className="dropdown-email">{user.email}</div>
                 </div>
                 <div className="dropdown-divider" />
-                <button onClick={() => { navigate("/profile"); setOpen(false); }}>
+                <button onClick={() => { navigate("/profile"); setOpen(false) }}>
                   My Profile
                 </button>
-                <button onClick={() => { navigate("/address"); setOpen(false); }}>
-                   Saved Address
+                <button onClick={() => { navigate("/address"); setOpen(false) }}>
+                  Saved Address
                 </button>
-                <button onClick={() => { navigate("/orders"); setOpen(false); }}>
+                <button onClick={() => { navigate("/orders"); setOpen(false) }}>
                   Orders
                 </button>
-                <button onClick={() => { navigate("/wishlist"); setOpen(false); }}>
+                <button onClick={() => { navigate("/wishlist"); setOpen(false) }}>
                   Wishlist
                 </button>
-                <button onClick={() => { navigate("/settings"); setOpen(false); }}>
+                <button onClick={() => { navigate("/settings"); setOpen(false) }}>
                   Settings
                 </button>
                 <div className="dropdown-divider" />
@@ -102,6 +133,7 @@ export default function Navbar() {
             Sign In
           </button>
         )}
+
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
