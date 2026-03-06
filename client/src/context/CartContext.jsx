@@ -3,6 +3,7 @@ import api from "../api/api"
 
 const CartContext = createContext()
 export const useCart = () => useContext(CartContext)
+
 export default function CartProvider({ children }) {
   const [cart, setCart] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -21,15 +22,22 @@ export default function CartProvider({ children }) {
   }, [])
 
   const addToCart = async (product) => {
-    await api.post("/cart", {
-      product_id: product.id,
-      variant_id: product.variants?.[0]?.printify_variant_id,
-      title: product.name,
-      price: product.price,
-      image_url: product.image,
-      quantity: 1
-    })
-    loadCart()
+    try {
+      await api.post("/cart", {
+        product_id: product.id,
+        variant_id: product.variants?.[0]?.printify_variant_id,
+        title: product.name,
+        price: product.price,
+        image_url: product.image,
+        quantity: product.quantity || 1
+      })
+
+      await loadCart()
+
+      setIsCartOpen(true)
+    } catch (err) {
+      console.error("Add to cart error:", err)
+    }
   }
 
   const removeFromCart = async (id) => {
@@ -42,10 +50,12 @@ export default function CartProvider({ children }) {
     await api.put(`/cart/${id}`, { quantity })
     loadCart()
   }
+
   const cartCount = cart.reduce(
     (total, item) => total + (item.quantity || 0),
     0
   )
+
   const cartTotal = cart.reduce(
     (total, item) =>
       total + (Number(item.price) || 0) * (item.quantity || 0),
