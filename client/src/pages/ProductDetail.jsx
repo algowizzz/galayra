@@ -25,7 +25,6 @@ export default function ProductDetail() {
     fetchProduct()
   }, [id])
 
-
   if (!product || !selectedVariant) {
     return <div className="product-detail">Loading...</div>
   }
@@ -47,7 +46,6 @@ export default function ProductDetail() {
 
   const shortDescription =
     product.description?.slice(0, 300) + "..."
-
   return (
     <>
       <div className="product-detail">
@@ -59,11 +57,10 @@ export default function ProductDetail() {
               alt={product.title}
             />
           </div>
-
           <div className="product-detail-info">
             <h1>{product.title}</h1>
             <div className="product-detail-price">
-              ₹{selectedVariant.price}
+              {selectedVariant.currency} {selectedVariant.price}
             </div>
             <div className="product-detail-desc">
               <div
@@ -76,28 +73,10 @@ export default function ProductDetail() {
               <button
                 className="read-more-btn"
                 onClick={() => setExpanded(!expanded)}
-              >{expanded ? "Read Less" : "Read More"}</button>
+              >
+                {expanded ? "Read Less" : "Read More"}
+              </button>
             </div>
-            {/* {product.variants?.length > 0 && (
-              <div className="model-selector">
-                <label>Select Model</label>
-                <select
-                  value={selectedVariant._id}
-                  onChange={(e) =>
-                    setSelectedVariant(
-                      product.variants.find(v => v._id === e.target.value)
-                    )
-                  }
-                >
-                  {product.variants.map(v => (
-                    <option key={v._id} value={v._id}>
-                      {v.model}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )} */}
-
             <div className="quantity-selector">
               <label>Quantity</label>
               <div className="quantity-controls">
@@ -105,8 +84,7 @@ export default function ProductDetail() {
                   className="quantity-btn"
                   onClick={() =>
                     setQuantity(Math.max(1, quantity - 1))
-                  }
-                >-</button>
+                  }>-</button>
                 <span className="quantity-value">
                   {quantity}
                 </span>
@@ -114,8 +92,7 @@ export default function ProductDetail() {
                   className="quantity-btn"
                   onClick={() =>
                     setQuantity(quantity + 1)
-                  }
-                >+</button>
+                  }>+</button>
               </div>
             </div>
             <button
@@ -142,7 +119,6 @@ export default function ProductDetail() {
                   alt={item.title}
                 />
               </div>
-
               <div className="product-info">
                 <h3 className="product-title">
                   {item.title}
@@ -152,7 +128,7 @@ export default function ProductDetail() {
                 </p>
                 <div className="product-bottom">
                   <span className="product-price">
-                    ₹{item.variants?.[0]?.price}
+                    {item.variants?.[0]?.currency} {item.variants?.[0]?.price}
                   </span>
                   <button className="add-btn">+</button>
                 </div>
