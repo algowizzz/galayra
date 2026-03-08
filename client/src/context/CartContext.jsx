@@ -23,6 +23,37 @@ export default function CartProvider({ children }) {
 
   const addToCart = async (product) => {
     try {
+      setCart(prev => {
+        const existing = prev.find(
+          item =>
+            item.product_id === product.id &&
+            item.variant_id === product.variants?.[0]?.printify_variant_id
+        )
+
+        if (existing) {
+          return prev.map(item =>
+            item === existing
+              ? { ...item, quantity: item.quantity + (product.quantity || 1) }
+              : item
+          )
+        }
+
+        return [
+          ...prev,
+          {
+            _id: Math.random().toString(), // temp id
+            product_id: product.id,
+            variant_id: product.variants?.[0]?.printify_variant_id,
+            title: product.name,
+            price: product.price,
+            image_url: product.image,
+            quantity: product.quantity || 1
+          }
+        ]
+      })
+
+      setIsCartOpen(true)
+
       await api.post("/cart", {
         product_id: product.id,
         variant_id: product.variants?.[0]?.printify_variant_id,
@@ -32,9 +63,7 @@ export default function CartProvider({ children }) {
         quantity: product.quantity || 1
       })
 
-      await loadCart()
-
-      setIsCartOpen(true)
+      loadCart()
     } catch (err) {
       console.error("Add to cart error:", err)
     }
