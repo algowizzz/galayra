@@ -18,93 +18,116 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       const res = await api.get(`/products/${id}`)
       setProduct(res.data)
-      if (res.data.variants?.length > 0) {
+      if (res.data.variants?.length) {
         setSelectedVariant(res.data.variants[0])
       }
     }
     fetchProduct()
   }, [id])
+
+
   if (!product || !selectedVariant) {
     return <div className="product-detail">Loading...</div>
   }
+
   const relatedProducts = products
     .filter(p => p._id !== product._id)
     .slice(0, 4)
+
   const handleAddToCart = () => {
     addToCart({
       id: product._id,
       name: product.title,
       image: product.image_url,
       price: selectedVariant.price,
-      quantity
+      quantity,
+      variants: [selectedVariant]
     })
   }
 
+  const shortDescription =
+    product.description?.slice(0, 300) + "..."
+
   return (
-    <div className="product-detail">
-      <div className="product-detail-grid">
-        <div className="product-gallery">
-          <img
-            src={product.image_url}
-            alt={product.title}
-            className="product-img"
-          />
-        </div>
-        <div className="product-detail-info">
-          <h1>{product.title}</h1>
-          <div className="product-detail-model">
-            {selectedVariant.name || ""}
-          </div>
-          <div className="product-detail-price">
-            ₹{selectedVariant.price}
-          </div>
-          <div className="product-detail-desc">
-            <div
-              className={`desc-content ${expanded ? "expanded" : ""}`}
-              dangerouslySetInnerHTML={{ __html: product.description }}
+    <>
+      <div className="product-detail">
+        <div className="product-detail-grid">
+          <div className="product-gallery">
+            <img
+              className="product-gallery-img"
+              src={product.image_url}
+              alt={product.title}
             />
-            {product.description?.length > 200 && (
+          </div>
+
+          <div className="product-detail-info">
+            <h1>{product.title}</h1>
+            <div className="product-detail-price">
+              ₹{selectedVariant.price}
+            </div>
+            <div className="product-detail-desc">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: expanded
+                    ? product.description
+                    : shortDescription
+                }}
+              />
               <button
                 className="read-more-btn"
                 onClick={() => setExpanded(!expanded)}
-              >
-                {expanded ? "Read Less" : "Read More"}
-              </button>
-            )}
-          </div>
-          <div className="quantity-selector">
-            <label>Quantity</label>
-            <div className="quantity-controls">
-              <button
-                className="quantity-btn"
-                onClick={() =>
-                  setQuantity(Math.max(1, quantity - 1))
-                }
-              >-</button>
-              <div className="quantity-value">
-                {quantity}
-              </div>
-              <button
-                className="quantity-btn"
-                onClick={() =>
-                  setQuantity(quantity + 1)
-                }
-              >+</button>
+              >{expanded ? "Read Less" : "Read More"}</button>
             </div>
+            {/* {product.variants?.length > 0 && (
+              <div className="model-selector">
+                <label>Select Model</label>
+                <select
+                  value={selectedVariant._id}
+                  onChange={(e) =>
+                    setSelectedVariant(
+                      product.variants.find(v => v._id === e.target.value)
+                    )
+                  }
+                >
+                  {product.variants.map(v => (
+                    <option key={v._id} value={v._id}>
+                      {v.model}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )} */}
+
+            <div className="quantity-selector">
+              <label>Quantity</label>
+              <div className="quantity-controls">
+                <button
+                  className="quantity-btn"
+                  onClick={() =>
+                    setQuantity(Math.max(1, quantity - 1))
+                  }
+                >-</button>
+                <span className="quantity-value">
+                  {quantity}
+                </span>
+                <button
+                  className="quantity-btn"
+                  onClick={() =>
+                    setQuantity(quantity + 1)
+                  }
+                >+</button>
+              </div>
+            </div>
+            <button
+              className="add-to-cart-btn"
+              onClick={handleAddToCart}
+            >Add to Cart</button>
           </div>
-          <button
-            className="add-to-cart-btn"
-            onClick={handleAddToCart}
-          >Add to Cart — ₹{selectedVariant.price * quantity}</button>
         </div>
       </div>
 
       <section className="related-products">
-        <div className="section-header">
-          <h2 className="section-title">
-            You May Also Like
-          </h2>
-        </div>
+        <h2>You May Also Like</h2>
         <div className="products-grid">
           {relatedProducts.map(item => (
             <div
@@ -114,41 +137,30 @@ export default function ProductDetail() {
             >
               <div className="product-image">
                 <img
+                  className="product-img"
                   src={item.image_url}
                   alt={item.title}
-                  className="product-img"
                 />
               </div>
+
               <div className="product-info">
                 <h3 className="product-title">
                   {item.title}
                 </h3>
                 <p className="product-model">
-                  {item.variants?.[0]?.name || ""}
+                  {item.variants?.[0]?.model}
                 </p>
                 <div className="product-bottom">
                   <span className="product-price">
                     ₹{item.variants?.[0]?.price}
                   </span>
-                  <button
-                    className="add-btn"
-                    onClick={e => {
-                      e.stopPropagation()
-                      addToCart({
-                        id: item._id,
-                        name: item.title,
-                        image: item.image_url,
-                        price: item.variants?.[0]?.price,
-                        quantity: 1
-                      })
-                    }}
-                  >+</button>
+                  <button className="add-btn">+</button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </section>
-    </div>
+    </>
   )
 }
