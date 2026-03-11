@@ -9,7 +9,7 @@ import Signup from "./pages/Signup";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import Profile from "./pages/Profile";
 import ProfileOrders from "./pages/ProfileOrders";
-import ProfileWishlist from "./pages/ProfileWishlist";
+// import ProfileWishlist from "./pages/ProfileWishlist";
 import ProfileSettings from "./pages/ProfileSettings";
 import ProfileAddresses from "./pages/ProfileAddresses";
 import About from "./pages/About";
@@ -30,7 +30,7 @@ export default function App() {
         <Route path="/oauth-success" element={<OAuthSuccess />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/orders" element={<ProfileOrders />} />
-        <Route path="/wishlist" element={<ProfileWishlist />} />
+        {/* <Route path="/wishlist" element={<ProfileWishlist />} /> */}
         <Route path="/settings" element={<ProfileSettings />} />
         <Route path="/address" element={<ProfileAddresses />} />
         <Route path="/about" element={<About />} />

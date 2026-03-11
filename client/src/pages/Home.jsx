@@ -1,5 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Bestsellers from "../components/BestSeller";
+import img1 from "../assets/img1.png";
+import img2 from "../assets/img2.png";
+import img4 from "../assets/img4.png";
+import img5 from "../assets/img5.png";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -20,11 +24,11 @@ export default function Home() {
         </div>
 
         <div className="hero-visual">
-          <div className="floating-phones">
-            <div className="phone-mockup">🌸</div>
-            <div className="phone-mockup">🌊</div>
-            <div className="phone-mockup">✨</div>
-          </div>
+          <img 
+            src={img1} 
+            alt="Hero Visual" 
+            className="hero-image"
+          />
         </div>
       </section>
 
