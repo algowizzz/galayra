@@ -2791,3 +2791,35 @@ h1, h2, h3, h4, h5 {
 .suggestion-item:hover{
   background:#f1f5f3;
 }
+
+.product-gallery-img{
+  max-width:260px;
+  max-height:320px;
+  object-fit:contain;
+}
+
+.product-detail-desc{
+  margin-bottom:20px;
+}
+
+.read-more-btn{
+  margin-top:10px;
+  border:none;
+  background:none;
+  color:#14532d;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.related-products{
+  background:#e8e3b6;
+  padding:80px 40px;
+  margin-top:60px;
+}
+
+.related-products h2{
+  text-align:center;
+  font-size:36px;
+  margin-bottom:40px;
+  font-family:'Playfair Display',serif;
+}
