@@ -3,6 +3,7 @@ import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
+import Reviews from "./pages/Reviews";
 import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/SignIn";
 import Signup from "./pages/Signup";
@@ -24,6 +25,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/reviews" element={<Reviews />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
