@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FiShoppingCart } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -47,33 +48,10 @@ export default function Navbar() {
       </ul>
 
       <div className="nav-actions">
-        <button
-          className="cart-btn"
-          onClick={() => setIsCartOpen(true)}
-          style={{ position: "relative", fontSize: 22 }}
-        >
-          🛒
+        <button className="cart-btn" onClick={() => setIsCartOpen(true)}>
+          <FiShoppingCart size={20} />
           {cartCount > 0 && (
-            <span
-              className="cart-badge"
-              style={{
-                position: "absolute",
-                top: -6,
-                right: -8,
-                background: "#135237",
-                color: "white",
-                fontSize: 11,
-                fontWeight: 600,
-                width: 20,
-                height: 20,
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              {cartCount}
-            </span>
+            <span className="cart-badge">{cartCount}</span>
           )}
         </button>
 
