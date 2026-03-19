@@ -9,7 +9,7 @@ export default function ProductsProvider({ children }) {
   const fetchProducts = async () => {
     try {
       console.log("Fetching products...")
-      const res = await api.get("/products")
+      const res = await api.get("/products?currency=INR")
       console.log("Products received:", res.data)
       setProducts(res.data)
     } catch (err) {
