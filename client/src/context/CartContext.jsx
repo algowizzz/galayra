@@ -27,7 +27,7 @@ export default function CartProvider({ children }) {
         const existing = prev.find(
           item =>
             item.product_id === product.id &&
-            item.variant_id === product.variants?.[0]?.printify_variant_id
+            item.variant_id === product.variant?.printify_variant_id
         )
 
         if (existing) {
@@ -41,9 +41,9 @@ export default function CartProvider({ children }) {
         return [
           ...prev,
           {
-            _id: Math.random().toString(), // temp id
+            _id: Math.random().toString(),
             product_id: product.id,
-            variant_id: product.variants?.[0]?.printify_variant_id,
+            variant_id: product.variant?.printify_variant_id,
             title: product.name,
             price: product.price,
             image_url: product.image,
@@ -56,7 +56,7 @@ export default function CartProvider({ children }) {
 
       await api.post("/cart", {
         product_id: product.id,
-        variant_id: product.variants?.[0]?.printify_variant_id,
+        variant_id: product.variant?.printify_variant_id,
         title: product.name,
         price: product.price,
         image_url: product.image,

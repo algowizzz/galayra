@@ -1,5 +1,6 @@
 import { useCart } from "../context/CartContext"
 import { useNavigate } from "react-router-dom"
+import { FaTrash } from "react-icons/fa";
 
 export default function CartDrawer() {
   const {
@@ -51,7 +52,7 @@ export default function CartDrawer() {
                   </div>
 
                   <div className="cart-item-price">
-                    {item.currency} {(item.price * item.quantity).toFixed(2)}
+                    ₹{(item.price * item.quantity).toFixed(0)}
                   </div>
                 </div>
 
@@ -59,7 +60,7 @@ export default function CartDrawer() {
                   <button
                     className="remove-item"
                     onClick={() => removeFromCart(item._id)}
-                  >🗑️</button>
+                  ><FaTrash/></button>
 
                   <div className="cart-item-quantity">
                     <button
