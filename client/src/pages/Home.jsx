@@ -1,12 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Bestsellers from "../components/BestSeller";
 import img1 from "../assets/img1.png";
-import img2 from "../assets/img2.png";
-import img4 from "../assets/img4.png";
-import img5 from "../assets/img5.png";
 
 export default function Home() {
   const navigate = useNavigate();
+
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("reviews")) || [];
+    setReviews(stored);
+  }, []);
 
   return (
     <>
@@ -19,25 +24,21 @@ export default function Home() {
             Premium phone cases designed to make a statement. Express yourself with stunning designs and unmatched protection.
           </p>
           <button className="cta-btn" onClick={() => navigate("/products")}>
-            Shop Collection <span>→</span>
+            Shop Collection →
           </button>
         </div>
-
         <div className="hero-visual">
-          <img 
-            src={img1} 
-            alt="Hero Visual" 
-            className="hero-image"
-          />
+          <img src={img1} alt="Hero" className="hero-image" />
         </div>
       </section>
 
       <section className="categories">
         <div className="section-header">
           <h2 className="section-title">Browse by Style</h2>
-          <p className="section-subtitle">Find the perfect case that matches your vibe</p>
+          <p className="section-subtitle">
+            Find the perfect case that matches your vibe
+          </p>
         </div>
-
         <div className="categories-grid">
           {["🎨","⚪","🌿","✨"].map((icon,i)=>(
             <div key={i} className="category-card" onClick={()=>navigate("/products")}>
@@ -55,9 +56,10 @@ export default function Home() {
       <section className="why-us">
         <div className="section-header">
           <h2 className="section-title">Why Choose Us</h2>
-          <p className="section-subtitle">Quality you can feel, style you can see</p>
+          <p className="section-subtitle">
+            Quality you can feel, style you can see
+          </p>
         </div>
-
         <div className="features-grid">
           {[
             ["🛡️","Premium Protection","Military-grade drop protection"],
@@ -74,14 +76,67 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="reviews">
+        <div className="section-header">
+          <h2 className="section-title">What Our Customers Say</h2>
+          <p className="section-subtitle">
+            Join thousands of happy customers
+          </p>
+        </div>
+        {reviews.length === 0 ? (
+          <div className="no-reviews">
+            <p>No reviews yet. Be the first to share your experience!</p>
+            <button
+              className="cta-btn"
+              onClick={() => navigate("/reviews")}
+            >
+              Write a Review
+            </button>
+          </div>
+        ) : (
+          <div className="reviews-grid">
+            {reviews.map((r, i) => (
+              <div className="reviews-scroll">
+                {reviews.slice(0, 6).map((r) => (
+                  <div key={r._id} className="review-card">
+                    <div className="review-stars">
+                      {"⭐".repeat(r.rating)}
+                    </div>
+                    <p className="review-text">"{r.review}"</p>
+                    <div className="review-author">
+                      <div className="author-avatar">👤</div>
+                      <div className="author-name">{r.name}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       <section className="newsletter">
         <div className="newsletter-content">
           <h2 className="section-title">Stay in the Loop</h2>
-          <p className="section-subtitle">Subscribe for exclusive deals and new arrivals</p>
-
-          <form className="newsletter-form">
-            <input type="email" className="newsletter-input" placeholder="Enter your email"/>
-            <button className="newsletter-btn">Subscribe</button>
+          <p className="section-subtitle">
+            Subscribe for exclusive deals and new arrivals
+          </p>
+          <form
+            className="newsletter-form"
+            onSubmit={(e)=>{
+              e.preventDefault();
+              alert("Subscribed successfully!");
+            }}
+          >
+            <input
+              type="email"
+              className="newsletter-input"
+              placeholder="Enter your email"
+              required
+            />
+            <button className="newsletter-btn">
+              Subscribe
+            </button>
           </form>
         </div>
       </section>
