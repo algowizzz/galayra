@@ -19,14 +19,17 @@ export default function CartDrawer() {
         className={`cart-overlay ${isCartOpen ? "open" : ""}`}
         onClick={() => setIsCartOpen(false)}
       />
+
       <div className={`cart-drawer ${isCartOpen ? "open" : ""}`}>
         <div className="cart-header">
           <h2>Your Cart</h2>
+
           <button
             className="close-cart"
             onClick={() => setIsCartOpen(false)}
           >✕</button>
         </div>
+
         <div className="cart-items">
           {cart.length === 0 ? (
             <div className="cart-empty">
@@ -41,25 +44,31 @@ export default function CartDrawer() {
                   alt={item.title}
                   className="cart-item-image"
                 />
+
                 <div className="cart-item-info">
                   <div className="cart-item-title">
                     {item.title}
                   </div>
+
                   <div className="cart-item-price">
-                    ₹{(item.price * item.quantity).toFixed(2)}
+                    {item.currency} {(item.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
+
                 <div className="cart-item-actions">
                   <button
                     className="remove-item"
                     onClick={() => removeFromCart(item._id)}
                   >🗑️</button>
+
                   <div className="cart-item-quantity">
                     <button
                       className="cart-qty-btn"
                       onClick={() => updateQty(item._id, item.quantity - 1)}
                     >-</button>
+
                     <span>{item.quantity}</span>
+
                     <button
                       className="cart-qty-btn"
                       onClick={() => updateQty(item._id, item.quantity + 1)}
@@ -70,11 +79,12 @@ export default function CartDrawer() {
             ))
           )}
         </div>
+
         {cart.length > 0 && (
           <div className="cart-footer">
             <div className="cart-subtotal">
               <span>Subtotal</span>
-              <span>₹{cartTotal.toFixed(2)}</span>
+              <span>{cartTotal.toFixed(2)}</span>
             </div>
 
             <button
@@ -83,7 +93,9 @@ export default function CartDrawer() {
                 setIsCartOpen(false)
                 navigate("/checkout")
               }}
-            >Checkout</button>
+            >
+              Checkout
+            </button>
           </div>
         )}
       </div>
