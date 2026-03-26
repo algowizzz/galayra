@@ -18,5 +18,7 @@ app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/printify", require("./routes/printifyRoutes"));
+app.use("/api/reviews", require("./routes/reviewRoutes"));
+app.use("/api/payment", require("./routes/paymentRoutes"));
 
 module.exports = app;

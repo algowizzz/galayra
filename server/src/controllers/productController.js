@@ -1,10 +1,19 @@
 const Product = require("../models/Product")
 const axios = require("axios")
+const { convertPrice } = require("../utils/currency")
 
 exports.getProducts = async (req, res) => {
   try {
+    const currency = req.query.currency || "INR"
     const products = await Product.find({ is_active: true })
-    res.json(products)
+    const updatedProducts = products.map(p => ({
+      ...p.toObject(),
+      variants: p.variants.map(v => ({
+        ...v.toObject(),
+        price: convertPrice(v.price, currency)
+      }))
+    }))
+    res.json(updatedProducts)
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: "Error fetching products" })
@@ -13,18 +22,24 @@ exports.getProducts = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
   try {
+    const currency = req.query.currency || "INR"
     const product = await Product.findOne({
       _id: req.params.id,
       is_active: true
     })
-
     if (!product) {
       return res.status(404).json({ message: "Product not found" })
     }
-
-    res.json(product);
+    const updatedProduct = {
+      ...product.toObject(),
+      variants: product.variants.map(v => ({
+        ...v.toObject(),
+        price: convertPrice(v.price, currency)
+      }))
+    }
+    res.json(updatedProduct)
   } catch (err) {
-    console.error(err);
+    console.error(err)
     res.status(500).json({ message: "Error fetching product" })
   }
 }
@@ -39,13 +54,10 @@ exports.syncProducts = async (req, res) => {
         }
       }
     )
-
-    const printifyProducts = response.data.data;
+    const printifyProducts = response.data.data
     const ids = []
-
     for (const p of printifyProducts) {
       ids.push(p.id)
-
       const variants = p.variants
         .filter(v => v.is_enabled)
         .map(v => ({
