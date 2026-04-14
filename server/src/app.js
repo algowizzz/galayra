@@ -20,5 +20,6 @@ app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/printify", require("./routes/printifyRoutes"));
 app.use("/api/reviews", require("./routes/reviewRoutes"));
 app.use("/api/payment", require("./routes/paymentRoutes"));
+app.use("/api/subscribe", require("./routes/subscriberRoutes"))
 
 module.exports = app;

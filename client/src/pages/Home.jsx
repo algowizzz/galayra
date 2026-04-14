@@ -1,17 +1,37 @@
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Bestsellers from "../components/BestSeller";
-import img1 from "../assets/img1.png";
+import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import Bestsellers from "../components/BestSeller"
+import img1 from "../assets/img1.png"
 
 export default function Home() {
-  const navigate = useNavigate();
-
-  const [reviews, setReviews] = useState([]);
-
+  const navigate = useNavigate()
+  const [reviews, setReviews] = useState([])
+  const [email, setEmail] = useState("")
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("reviews")) || [];
-    setReviews(stored);
-  }, []);
+    const stored = JSON.parse(localStorage.getItem("reviews")) || []
+    setReviews(stored)
+  }, [])
+  const handleSubscribe = async (e) => {
+    e.preventDefault()
+    try {
+      const res = await fetch("http://localhost:3000/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        alert("Subscribed successfully!")
+        setEmail("")
+      } else {
+        alert(data.message)
+      }
+    } catch {
+      alert("Error subscribing")
+    }
+  }
 
   return (
     <>
@@ -83,34 +103,30 @@ export default function Home() {
             Join thousands of happy customers
           </p>
         </div>
+
         {reviews.length === 0 ? (
           <div className="no-reviews">
             <p>No reviews yet. Be the first to share your experience!</p>
-            <button
-              className="cta-btn"
-              onClick={() => navigate("/reviews")}
-            >
+            <button className="cta-btn" onClick={() => navigate("/reviews")}>
               Write a Review
             </button>
           </div>
         ) : (
           <div className="reviews-grid">
-            {reviews.map((r, i) => (
-              <div className="reviews-scroll">
-                {reviews.slice(0, 6).map((r) => (
-                  <div key={r._id} className="review-card">
-                    <div className="review-stars">
-                      {"⭐".repeat(r.rating)}
-                    </div>
-                    <p className="review-text">"{r.review}"</p>
-                    <div className="review-author">
-                      <div className="author-avatar">👤</div>
-                      <div className="author-name">{r.name}</div>
-                    </div>
+            <div className="reviews-scroll">
+              {reviews.slice(0, 6).map((r) => (
+                <div key={r._id} className="review-card">
+                  <div className="review-stars">
+                    {"⭐".repeat(r.rating)}
                   </div>
-                ))}
-              </div>
-            ))}
+                  <p className="review-text">"{r.review}"</p>
+                  <div className="review-author">
+                    <div className="author-avatar">👤</div>
+                    <div className="author-name">{r.name}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </section>
@@ -121,17 +137,14 @@ export default function Home() {
           <p className="section-subtitle">
             Subscribe for exclusive deals and new arrivals
           </p>
-          <form
-            className="newsletter-form"
-            onSubmit={(e)=>{
-              e.preventDefault();
-              alert("Subscribed successfully!");
-            }}
-          >
+
+          <form className="newsletter-form" onSubmit={handleSubscribe}>
             <input
               type="email"
               className="newsletter-input"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <button className="newsletter-btn">
@@ -141,5 +154,5 @@ export default function Home() {
         </div>
       </section>
     </>
-  );
+  )
 }
